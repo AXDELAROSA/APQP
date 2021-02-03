@@ -18,16 +18,20 @@ IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[PG_LI_
 	DROP PROCEDURE [dbo].[PG_LI_ARCUSFIL_PROGRAM]
 GO
 -- SELECT * FROM ARCUSFIL_PROGRAM
--- EXECUTE [dbo].[PG_LI_ARCUSFIL_PROGRAM] 0,139,13
+-- EXECUTE [dbo].[PG_LI_ARCUSFIL_PROGRAM] 0,139,13,0
+-- EXECUTE [dbo].[PG_LI_ARCUSFIL_PROGRAM] 0,139,13,1
 CREATE PROCEDURE [dbo].[PG_LI_ARCUSFIL_PROGRAM]
 	@PP_K_SISTEMA_EXE				INT,
 	@PP_K_USUARIO_ACCION			INT,
 	-- ===========================
-	@PP_A4GLIdentity				VARCHAR(200)
+	@PP_A4GLIdentity				VARCHAR(200),
+	@PP_L_DESGLOSAR					INT
 AS
 	DECLARE @VP_MENSAJE				VARCHAR(300) = ''
 	-- ///////////////////////////////////////////
 	-- ==================================================================================
+IF @PP_L_DESGLOSAR = 1
+BEGIN
 	SELECT		TOP (5000)
 				CUS_NO,
 				ARCUSFIL_PROGRAM.S_ARCUSFIL_PROGRAM,
@@ -55,7 +59,6 @@ AS
 				-- =========================================
 				ARCUSFIL_PROGRAM_OPTION.K_ARCUSFIL_PROGRAM_OPTION,
 				ARCUSFIL_PROGRAM.K_ARCUSFIL_PROGRAM
-				--,ARCUSFIL_PROGRAM.*
 				-- =============================	
 	FROM		ARCUSFIL_SQL
 	INNER JOIN	ARCUSFIL_PROGRAM		ON ARCUSFIL_PROGRAM.A4GLIdentity=ARCUSFIL_SQL.A4GLIdentity
@@ -65,6 +68,23 @@ AS
 	AND			( @PP_A4GLIdentity=-1					OR	ARCUSFIL_PROGRAM.A4GLIdentity=@PP_A4GLIdentity)
 				-- =============================
 	ORDER BY	CUS_NO	,ARCUSFIL_PROGRAM.S_ARCUSFIL_PROGRAM
+END
+ELSE
+BEGIN
+	SELECT		TOP (5000)
+				CUS_NO,
+				ARCUSFIL_PROGRAM.S_ARCUSFIL_PROGRAM,
+				-- =============================	
+				ARCUSFIL_PROGRAM.K_ARCUSFIL_PROGRAM
+	FROM		ARCUSFIL_SQL
+	INNER JOIN	ARCUSFIL_PROGRAM		ON ARCUSFIL_PROGRAM.A4GLIdentity=ARCUSFIL_SQL.A4GLIdentity
+	--INNER JOIN	ARCUSFIL_PROGRAM_OPTION	ON ARCUSFIL_PROGRAM.K_ARCUSFIL_PROGRAM=ARCUSFIL_PROGRAM_OPTION.K_ARCUSFIL_PROGRAM
+				-- =============================
+	WHERE		ARCUSFIL_PROGRAM.L_BORRADO<>1
+	AND			( @PP_A4GLIdentity=-1					OR	ARCUSFIL_PROGRAM.A4GLIdentity=@PP_A4GLIdentity)
+				-- =============================
+	ORDER BY	CUS_NO	,ARCUSFIL_PROGRAM.S_ARCUSFIL_PROGRAM
+END
 	-- /////////////////////////////////////////////////////////////////////
 GO
 
@@ -76,7 +96,7 @@ IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[PG_LI_
 	DROP PROCEDURE [dbo].[PG_LI_ARCUSFIL_PROGRAM_OPTION]
 GO
 -- SELECT * FROM ARCUSFIL_PROGRAM_OPTION
---		 EXECUTE [dbo].[PG_LI_ARCUSFIL_PROGRAM_OPTION] 0,139,1
+--		 EXECUTE [dbo].[PG_LI_ARCUSFIL_PROGRAM_OPTION] 0,139,6
 CREATE PROCEDURE [dbo].[PG_LI_ARCUSFIL_PROGRAM_OPTION]
 	@PP_K_SISTEMA_EXE				INT,
 	@PP_K_USUARIO_ACCION			INT,
@@ -87,7 +107,30 @@ AS
 	-- ///////////////////////////////////////////
 	-- =========================================	-- =========================================
 	SELECT		TOP(500)
-				ARCUSFIL_PROGRAM_OPTION.*
+				S_ARCUSFIL_PROGRAM_OPTION	AS OPTION_01,
+				-- =========================================
+				(CASE
+					WHEN	D_ARCUSFIL_PROGRAM_OPTION=''	THEN	'----'
+					ELSE	D_ARCUSFIL_PROGRAM_OPTION
+				END)	AS	OPTION_02,
+				-- =========================================
+				(CASE
+					WHEN	ARCUSFIL_PROGRAM_OPTION_MODEL=''	THEN	'----'
+					ELSE	ARCUSFIL_PROGRAM_OPTION_MODEL
+				END)	AS	MODEL,
+				-- =========================================
+				(CASE
+					WHEN	ARCUSFIL_PROGRAM_OPTION_YEAR=''	THEN	'----'
+					ELSE	ARCUSFIL_PROGRAM_OPTION_YEAR
+				END)	AS	[YEAR],
+				-- =========================================
+				(CASE
+					WHEN	ARCUSFIL_PROGRAM_OPTION_MAKER=''	THEN	'----'
+					ELSE	ARCUSFIL_PROGRAM_OPTION_MAKER
+				END)	AS	MAKER,
+				-- =========================================
+				ARCUSFIL_PROGRAM_OPTION.K_ARCUSFIL_PROGRAM_OPTION
+				--ARCUSFIL_PROGRAM_OPTION.*
 				-- =============================	
 	FROM		ARCUSFIL_PROGRAM_OPTION
 	INNER JOIN	ARCUSFIL_PROGRAM				ON	ARCUSFIL_PROGRAM_OPTION.K_ARCUSFIL_PROGRAM=ARCUSFIL_PROGRAM.K_ARCUSFIL_PROGRAM
@@ -95,7 +138,7 @@ AS
 	WHERE		ARCUSFIL_PROGRAM.L_BORRADO<>1
 	AND			ARCUSFIL_PROGRAM_OPTION.K_ARCUSFIL_PROGRAM=@PP_K_ARCUSFIL_PROGRAM
 				-- =============================
-	ORDER BY	K_ARCUSFIL_PROGRAM ,K_ARCUSFIL_PROGRAM_OPTION
+	ORDER BY	ARCUSFIL_PROGRAM_OPTION.K_ARCUSFIL_PROGRAM ,K_ARCUSFIL_PROGRAM_OPTION
 	-- /////////////////////////////////////////////////////////////////////
 GO
 

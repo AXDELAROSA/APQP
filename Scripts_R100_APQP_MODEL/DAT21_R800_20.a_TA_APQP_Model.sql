@@ -7,7 +7,7 @@
 -- // CREATION DATE:	20210122
 -- ////////////////////////////////////////////////////////////// 
 
---USE [DATA_02Pruebas]
+USE [DATA_02Pruebas]
 GO
 
 -- //////////////////////////////////////////////////////////////
@@ -260,13 +260,15 @@ CREATE TABLE [dbo].[APQP_MODEL_HDR]	(
 			-- ============================	
 			[K_APQP_MODEL_HDR]					[INT] IDENTITY (1,1)	NOT NULL,
 			[D_APQP_MODEL_HDR]					[VARCHAR](255),
-			[S_APQP_MODEL_HDR]					[VARCHAR](25),						---	PROGRAM
 			[C_APQP_MODEL_HDR]					[VARCHAR](500)	NOT NULL,
 			-- ===========================
-			[APQP_MODEL_HDR_OPTION_01]			[VARCHAR](255),						---	OPTIONS
-			[APQP_MODEL_HDR_OPTION_02]			[VARCHAR](255),						---	OPTIONS
+			--[APQP_MODEL_HDR_OPTION_01]			[VARCHAR](255),						---	OPTIONS
+			--[APQP_MODEL_HDR_OPTION_02]			[VARCHAR](255),						---	OPTIONS
 			-- ===========================
 			[K_ARCUSFIL]						[INT] NOT NULL,
+			[K_ARCUSFIL_PROGRAM]				[INT] NOT NULL,
+			--	[S_APQP_MODEL_HDR]					[VARCHAR](25),						---	PROGRAM
+			-- ===========================
 			[K_STATUS_APQP_MODEL]				[INT] NOT NULL DEFAULT 1,
 			[K_APQP_MODEL_HDR_TYPE]				[INT] NOT NULL DEFAULT 1,
 			-- ===========================

@@ -225,6 +225,51 @@ GO
 
 
 -- //////////////////////////////////////////////////////////////
+--	SE UTILIZAN EN LA FO_APQP_MODEL
+-- //////////////////////////////////////////////////////////////
+-- // STORED PROCEDURE ---> PARA CARGAR LOS ESTADOS
+-- //////////////////////////////////////////////////////////////
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[PG_CB_PROGRAM_APQP_MODEL]') AND type in (N'P', N'PC'))
+	DROP PROCEDURE [dbo].[PG_CB_PROGRAM_APQP_MODEL]
+GO
+--		 EXECUTE [dbo].[PG_CB_PROGRAM_APQP_MODEL] 0,139,07
+--		 EXECUTE [dbo].[PG_CB_PROGRAM_APQP_MODEL] 0,139,13
+--		 EXECUTE [dbo].[PG_CB_PROGRAM_APQP_MODEL] 0,139,20
+--		 EXECUTE [dbo].[PG_CB_PROGRAM_APQP_MODEL] 0,139,-1
+CREATE PROCEDURE [dbo].[PG_CB_PROGRAM_APQP_MODEL]
+	@PP_K_SISTEMA_EXE			INT,
+	@PP_K_USUARIO				INT,
+	--============================
+	@PP_A4LGIDENTITY			INT
+	--@PP_L_CON_TODOS				INT,
+AS
+	DECLARE @VP_TA_CATALOGO	AS TABLE
+				(	TA_K_CATALOGO		INT,
+					TA_D_CATALOGO		VARCHAR(50)	)	
+	INSERT INTO @VP_TA_CATALOGO 
+	SELECT		K_ARCUSFIL_PROGRAM		AS K_COMBOBOX,
+				S_ARCUSFIL_PROGRAM		AS D_COMBOBOX
+	FROM	ARCUSFIL_PROGRAM
+	WHERE	L_ARCUSFIL_PROGRAM			= 1
+	AND		A4GLIdentity=@PP_A4LGIDENTITY
+	ORDER BY S_ARCUSFIL_PROGRAM
+
+	INSERT INTO @VP_TA_CATALOGO
+		( TA_K_CATALOGO,	TA_D_CATALOGO	)
+	VALUES
+		( -1,	'( SELEECIONE UNA OPCIÓN )'	)
+
+	SELECT		TA_K_CATALOGO	AS K_COMBOBOX,
+				TA_D_CATALOGO	AS D_COMBOBOX 
+	FROM		@VP_TA_CATALOGO
+	ORDER BY	TA_D_CATALOGO 
+	-- ==========================================
+
+	-- ////////////////////////////////////////////////////
+GO
+
+
+-- //////////////////////////////////////////////////////////////
 --	SE UTILIZAN EN LA FO_APQP_MODEL_HDR
 -- //////////////////////////////////////////////////////////////
 -- // STORED PROCEDURE ---> PARA CARGAR LOS ESTADOS
