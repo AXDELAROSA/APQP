@@ -70,7 +70,7 @@ CREATE TABLE [dbo].[APQP_TEAM_DET]	(
 			-- ===========================
 			[L_APQP_TEAM_DET_YES]				[INT] NOT NULL DEFAULT 0,
 			[L_APQP_TEAM_DET_NO]				[INT] NOT NULL DEFAULT 0,
-			[L_APQP_QUAL_DET_NA]				[INT] NOT NULL DEFAULT 0,
+			[L_APQP_TEAM_DET_NA]				[INT] NOT NULL DEFAULT 0,
 			-- ===========================
 			[F_APQP_TEAM_DET_COMPLETED]			[DATE]	NULL
 ) ON [PRIMARY]

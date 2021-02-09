@@ -66,7 +66,7 @@ CREATE TABLE [dbo].[APQP_TOOL_DET]	(
 			-- ===========================
 			[L_APQP_TOOL_DET_YES]				[INT] NOT NULL DEFAULT 0,
 			[L_APQP_TOOL_DET_NO]				[INT] NOT NULL DEFAULT 0,
-			[L_APQP_QUAL_DET_NA]				[INT] NOT NULL DEFAULT 0,
+			[L_APQP_TOOL_DET_NA]				[INT] NOT NULL DEFAULT 0,
 			-- ===========================
 			[F_APQP_TOOL_DET_COMPLETED]			[DATE]	NULL,
 			-- ===========================

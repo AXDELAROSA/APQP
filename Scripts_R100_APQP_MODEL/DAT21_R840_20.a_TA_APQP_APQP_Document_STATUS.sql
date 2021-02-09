@@ -79,7 +79,7 @@ SET NOCOUNT ON
 -- ============================================================================================================
 --	ESTATUS PARA EL CIERRE EL ENCABEZADO DE APQP_MODEL
 EXECUTE [dbo].[PG_CI_STATUS_APQP_DOCUMENT]  0, 139,	00, '( POR DEFINIR )'		,'' , 'XDEFI'	, 00 , 1
-EXECUTE [dbo].[PG_CI_STATUS_APQP_DOCUMENT]  0, 139,	01, 'COMPLETO'				,'' , 'ACTIV'	, 10 , 1
+EXECUTE [dbo].[PG_CI_STATUS_APQP_DOCUMENT]  0, 139,	01, 'COMPLETO'				,'' , 'COMPL'	, 10 , 1
 EXECUTE [dbo].[PG_CI_STATUS_APQP_DOCUMENT]  0, 139,	02, 'INCOMPLETO'			,'' , 'ICOMP'	, 20 , 1
 SET NOCOUNT OFF
 GO

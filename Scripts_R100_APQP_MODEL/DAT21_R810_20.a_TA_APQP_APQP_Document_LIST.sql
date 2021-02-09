@@ -16,7 +16,7 @@ GO
 --			SELECT * FROM [APQP_FLOW_ACTIVITY_LIST]
 --			SELECT * FROM [APQP_PFMEA_ACTIVITY_LIST]
 --			SELECT * FROM [APQP_CONTROL_ACTIVITY_LIST]
---			SELECT * FROM [APQP_RISK_ACTIVITY_LIST]
+--			SELECT * FROM [APQP_RISK_ACTIVITY_LIST]			
 
 -- //////////////////////////////////////////////////////
 -- //////////////////////////////////////////////////////
