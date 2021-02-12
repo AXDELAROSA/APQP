@@ -131,7 +131,9 @@ CREATE PROCEDURE [dbo].[PG_IN_APQP_MODEL_HDR]
 	@PP_K_APQP_MODEL_HDR_TYPE			INT,
 	-- ============================
 	@PP_APQP_MODEL_HDR_NUMBER			VARCHAR(200),
-	@PP_F_APQP_MODEL_HDR_CREATED		DATE
+	@PP_F_APQP_MODEL_HDR_CREATED		DATE,
+	-- ============================
+	@PP_APQP_ECN_RFQ_SP_REFERENCE		VARCHAR(255)
 AS
 	DECLARE @VP_MENSAJE				VARCHAR(300) = ''
 			,@VP_K_APQP_MODEL_HDR			INT = 0
@@ -147,6 +149,7 @@ BEGIN TRY
 				[K_STATUS_APQP_MODEL],			[K_APQP_MODEL_HDR_TYPE],
 				-- ===========================
 				[APQP_MODEL_HDR_NUMBER],		[F_APQP_MODEL_HDR_CREATED],
+				[APQP_ECN_RFQ_SP_REFERENCE],
 				-- ===========================
 				[K_USUARIO_ALTA], [F_ALTA], [K_USUARIO_CAMBIO], [F_CAMBIO],
 				[L_BORRADO], [K_USUARIO_BAJA], [F_BAJA]  )
@@ -158,6 +161,7 @@ BEGIN TRY
 				@PP_K_STATUS_APQP_MODEL,		@PP_K_APQP_MODEL_HDR_TYPE,
 				-- ============================
 				@PP_APQP_MODEL_HDR_NUMBER,		@PP_F_APQP_MODEL_HDR_CREATED,
+				@PP_APQP_ECN_RFQ_SP_REFERENCE,
 				-- ===========================
 				@PP_K_USUARIO_ACCION, GETDATE(), @PP_K_USUARIO_ACCION, GETDATE(),
 				0, NULL, NULL  )
@@ -193,6 +197,17 @@ BEGIN TRY
 											-- ===========================
 											@VP_K_APQP_MODEL_HDR,	@PP_K_APQP_MODEL_HDR_TYPE,
 											@PP_F_APQP_MODEL_HDR_CREATED
+
+	--========================================================================================
+	--========================================================================================
+	--	A PARTIR DE AQUÍ SE INSERTARAN LOS REGISTROS PARA CADA UNO DE LOS DOCUMENTOS DEL MODELO
+	--	ES UN INSERT POR DOCUMENTO	(INDEX, TEAM, TOOL, QUAL, FLOOR, FLOW, PFMEA, CONTROL, RISK)
+	--	(	DAT21_R850_20.c_SP_APQP_Document	) SE ENCUENTRA EN ESTE ARCHIVO EL SP
+
+	EXECUTE	[dbo].[PG_IN_APQP_TEAM_HDR]		@PP_K_SISTEMA_EXE	,@PP_K_USUARIO_ACCION,
+											-- ===========================
+											@VP_K_APQP_MODEL_HDR,	@PP_APQP_ECN_RFQ_SP_REFERENCE
+
 
 	-- /////////////////////////////////////////////////////////////////////
 COMMIT TRANSACTION 
@@ -235,7 +250,8 @@ AS
 			,@VP_K_APQP_MODEL_ACTIVITY_LIST			INT = 0
 ---===================================================================================================================================================
 	--	PARA LA CREACIÓN DE LA CONSULTA DINAMICA	
-
+	--	ES POR EL TIPO DE VERSION, CUANDO ES NUEVO MODELO SE UTILIZA EL 10, PARA SELECCIONAR LAS ACTIVIDADES QUE SON DE ESE TIPO.
+	--	CUANDO ES UN CAMBIO ESPECIFICO SE PODRÁ UTILIZAR OTRO TIPO SOLO ES CUESTION DE DEFINIR EN LAS ACTIVIDADES CUALES SE INSERTARAN DE ACUERDO A ESE TIPO DE CAMBIO.
 	DECLARE	@TA_RESULTADOS_SELECT	AS TABLE
 		(	TA_K_APQP_MODEL_ACTIVITY_LIST	INT		)
 
@@ -342,7 +358,9 @@ CREATE PROCEDURE [dbo].[PG_UP_APQP_MODEL_HDR]
 	@PP_K_APQP_MODEL_HDR_TYPE			INT,
 	-- ============================
 	@PP_APQP_MODEL_HDR_NUMBER			VARCHAR(200),
-	@PP_F_APQP_MODEL_HDR_CREATED		DATE
+	@PP_F_APQP_MODEL_HDR_CREATED		DATE,
+	-- ============================
+	@PP_APQP_ECN_RFQ_SP_REFERENCE		VARCHAR(255)
 AS			
 DECLARE @VP_MENSAJE					VARCHAR(300) = ''
 BEGIN TRANSACTION 
@@ -377,6 +395,8 @@ BEGIN TRY
 			-- ===========================	= -- ============================
 			[APQP_MODEL_HDR_NUMBER]			= @PP_APQP_MODEL_HDR_NUMBER,
 			[F_APQP_MODEL_HDR_CREATED]		= @PP_F_APQP_MODEL_HDR_CREATED,
+			-- ===========================	= -- ============================
+			[APQP_ECN_RFQ_SP_REFERENCE]		=  @PP_APQP_ECN_RFQ_SP_REFERENCE,
 			-- ====================
 			[F_CAMBIO]						= GETDATE(), 
 			[K_USUARIO_CAMBIO]				= @PP_K_USUARIO_ACCION

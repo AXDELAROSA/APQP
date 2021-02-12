@@ -7,7 +7,7 @@
 -- // CREATION DATE:	20210122
 -- ////////////////////////////////////////////////////////////// 
 
-USE [DATA_02Pruebas]
+--USE [DATA_02]
 GO
 
 -- //////////////////////////////////////////////////////////////
@@ -275,6 +275,7 @@ CREATE TABLE [dbo].[APQP_MODEL_HDR]	(
 			[APQP_MODEL_HDR_NUMBER]				[VARCHAR](255),
 			[F_APQP_MODEL_HDR_CREATED]			[DATE]	NOT NULL,
 			-- ===========================
+			[APQP_ECN_RFQ_SP_REFERENCE]			[VARCHAR](255)	NOT NULL DEFAULT ''
 ) ON [PRIMARY]
 GO
 ALTER TABLE [dbo].[APQP_MODEL_HDR]
