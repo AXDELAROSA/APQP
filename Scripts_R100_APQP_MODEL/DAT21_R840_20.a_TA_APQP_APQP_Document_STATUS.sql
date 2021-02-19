@@ -7,7 +7,7 @@
 -- // CREATION DATE:	20210202
 -- ////////////////////////////////////////////////////////////// 
 
-USE [DATA_02]
+USE [DATA_02Pruebas]
 GO
 
 -- //////////////////////////////////////////////////////////////
@@ -79,8 +79,8 @@ SET NOCOUNT ON
 -- ============================================================================================================
 --	ESTATUS PARA EL CIERRE EL ENCABEZADO DE APQP_MODEL
 EXECUTE [dbo].[PG_CI_STATUS_APQP_DOCUMENT]  0, 139,	00, '( POR DEFINIR )'		,'' , 'XDEFI'	, 00 , 1
-EXECUTE [dbo].[PG_CI_STATUS_APQP_DOCUMENT]  0, 139,	01, 'COMPLETO'				,'' , 'COMPL'	, 10 , 1
-EXECUTE [dbo].[PG_CI_STATUS_APQP_DOCUMENT]  0, 139,	02, 'INCOMPLETO'			,'' , 'ICOMP'	, 20 , 1
+EXECUTE [dbo].[PG_CI_STATUS_APQP_DOCUMENT]  0, 139,	10, 'COMPLETO'				,'' , 'COMPL'	, 10 , 1
+EXECUTE [dbo].[PG_CI_STATUS_APQP_DOCUMENT]  0, 139,	20, 'INCOMPLETO'			,'' , 'ICOMP'	, 20 , 1
 SET NOCOUNT OFF
 GO
 -- //////////////////////////////////////////////////////

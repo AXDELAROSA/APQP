@@ -7,7 +7,7 @@
 -- // CREATION DATE:	20210202
 -- ////////////////////////////////////////////////////////////// 
 
-USE [DATA_02]
+USE [DATA_02Pruebas]
 GO
 
 -- //////////////////////////////////////////////////////////////
@@ -31,9 +31,12 @@ CREATE TABLE [dbo].[APQP_TEAM_HDR]	(
 			[K_APQP_TEAM_HDR]					[INT] IDENTITY (1,1)	NOT NULL,
 			[K_APQP_MODEL_HDR]					[INT],
 			-- ===========================
+			[K_TYPE_APQP_DOCUMENT]				[INT] NOT NULL DEFAULT 10,	-- ESTE CAMPO ES PARA LA VISTA DEL INDEX, EL TIPO DE DOCUMENTO SE DIVIDE POR CADA UNA DE LAS PESTAÑAS DE EXCEL.
+			-- ===========================
 			[K_STATUS_APQP_DOCUMENT]			[INT] NOT NULL DEFAULT 0,
-			[APQP_TEAM_HDR_RFQ]					[VARCHAR](255),
 			[F_APQP_TEAM_HDR_CREATED]			[DATE]	NOT NULL,
+			-- ===========================
+			[APQP_TEAM_SUMMARY]					[DECIMAL](10,2)	NOT NULL DEFAULT 0,
 			-- ===========================
 			[L_APQP_TEAM_HDR_01]				[INT]	NOT NULL DEFAULT 0,
 			[L_APQP_TEAM_HDR_02]				[INT]	NOT NULL DEFAULT 0,

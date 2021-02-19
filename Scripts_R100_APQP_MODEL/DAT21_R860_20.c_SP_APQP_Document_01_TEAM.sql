@@ -7,7 +7,7 @@
 -- // CREATION DATE:	20210203
 -- ////////////////////////////////////////////////////////////// 
 
-USE [DATA_02]
+USE [DATA_02Pruebas]
 GO
 
 -- //////////////////////////////////////////////////////////////
@@ -59,14 +59,25 @@ AS
 	DECLARE @VP_MENSAJE				VARCHAR(300) = ''
 	-- ///////////////////////////////////////////
 	-- =========================================	-- =========================================
-	SELECT		TOP (5000)
+	SELECT		--TOP (5000)
+				K_APQP_TEAM_ACTIVITY_LIST_TYPE	AS K_TYPE,
+				O_APQP_TEAM_ACTIVITY_LIST		AS L_ESTATUS_CHECK,
+				D_APQP_TEAM_ACTIVITY_LIST		AS D_LIST,
+				L_APQP_TEAM_DET_YES				AS L_YES,
+				L_APQP_TEAM_DET_NO				AS L_NO,
+				K_APQP_TEAM_DET					AS K_DET,
 				APQP_TEAM_DET.*
-				-- =============================	
+				-- =============================
 	FROM		APQP_TEAM_DET
 	INNER JOIN	APQP_TEAM_HDR			ON	APQP_TEAM_HDR.K_APQP_TEAM_HDR	= APQP_TEAM_DET.K_APQP_TEAM_HDR
+	INNER JOIN	APQP_TEAM_ACTIVITY_LIST	ON	APQP_TEAM_ACTIVITY_LIST.K_APQP_TEAM_ACTIVITY_LIST	= APQP_TEAM_DET.K_APQP_TEAM_ACTIVITY_LIST
 				-- =============================
-	WHERE		APQP_TEAM_DET.L_BORRADO<>1
+	WHERE		APQP_TEAM_DET.L_BORRADO				<> 1
+	AND			L_APQP_TEAM_ACTIVITY_LIST_VISIBLE	=  1
 				-- =============================
+	AND			APQP_TEAM_DET.K_APQP_TEAM_HDR						= @PP_K_APQP_TEAM_HDR
+	ORDER BY	K_APQP_TEAM_ACTIVITY_LIST_TYPE,
+				O_APQP_TEAM_ACTIVITY_LIST
 	-- /////////////////////////////////////////////////////////////////////
 GO
 
@@ -96,35 +107,36 @@ AS
 	WHERE		APQP_TEAM_HDR.L_BORRADO<>1
 				-- =============================
 	AND			APQP_TEAM_HDR.K_APQP_TEAM_HDR = @PP_K_APQP_TEAM_HDR
+	--AND			APQP_TEAM_HDR.K_APQP_MODEL_HDR = @PP_K_APQP_MODEL_HDR
 	-- ////////////////////////////////////////////////////////////////////
 GO
 
 
--- //////////////////////////////////////////////////////////////
--- // STORED PROCEDURE ---> SELECT / FICHA
--- //////////////////////////////////////////////////////////////
-IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[PG_SK_APQP_TEAM_DET]') AND type in (N'P', N'PC'))
-	DROP PROCEDURE [dbo].[PG_SK_APQP_TEAM_DET]
-GO
---		 EXECUTE [dbo].[PG_SK_APQP_TEAM_DET] 0,139,1
-CREATE PROCEDURE [dbo].[PG_SK_APQP_TEAM_DET]
-	@PP_K_SISTEMA_EXE				INT,
-	@PP_K_USUARIO_ACCION			INT,
-	-- ===========================
-	@PP_K_APQP_TEAM_DET				INT
-AS
-	-- ///////////////////////////////////////////
-	SELECT		TOP (1)
-				APQP_TEAM_DET.*
-				-- =============================	
-	FROM		APQP_TEAM_DET
-	INNER JOIN	APQP_TEAM_HDR			ON	APQP_TEAM_HDR.K_APQP_TEAM_HDR	= APQP_TEAM_DET.K_APQP_TEAM_HDR
-				-- =============================
-	WHERE		APQP_TEAM_DET.L_BORRADO<>1
-				-- =============================
-	AND			APQP_TEAM_DET.K_APQP_TEAM_DET = @PP_K_APQP_TEAM_DET
-	-- ////////////////////////////////////////////////////////////////////
-GO
+---- //////////////////////////////////////////////////////////////
+---- // STORED PROCEDURE ---> SELECT / FICHA
+---- //////////////////////////////////////////////////////////////
+--IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[PG_SK_APQP_TEAM_DET]') AND type in (N'P', N'PC'))
+--	DROP PROCEDURE [dbo].[PG_SK_APQP_TEAM_DET]
+--GO
+----		 EXECUTE [dbo].[PG_SK_APQP_TEAM_DET] 0,139,1
+--CREATE PROCEDURE [dbo].[PG_SK_APQP_TEAM_DET]
+--	@PP_K_SISTEMA_EXE				INT,
+--	@PP_K_USUARIO_ACCION			INT,
+--	-- ===========================
+--	@PP_K_APQP_TEAM_DET				INT
+--AS
+--	-- ///////////////////////////////////////////
+--	SELECT		TOP (1)
+--				APQP_TEAM_DET.*
+--				-- =============================	
+--	FROM		APQP_TEAM_DET
+--	INNER JOIN	APQP_TEAM_HDR			ON	APQP_TEAM_HDR.K_APQP_TEAM_HDR	= APQP_TEAM_DET.K_APQP_TEAM_HDR
+--				-- =============================
+--	WHERE		APQP_TEAM_DET.L_BORRADO<>1
+--				-- =============================
+--	AND			APQP_TEAM_DET.K_APQP_TEAM_DET = @PP_K_APQP_TEAM_DET
+--	-- ////////////////////////////////////////////////////////////////////
+--GO
 
 
 -- //////////////////////////////////////////////////////////////
@@ -138,8 +150,8 @@ CREATE PROCEDURE [dbo].[PG_IN_APQP_TEAM_HDR]
 	@PP_K_SISTEMA_EXE					INT,
 	@PP_K_USUARIO_ACCION				INT,
 	-- ===========================
-	@PP_K_APQP_MODEL_HDR				INT,
-	@PP_APQP_TEAM_HDR_RFQ				VARCHAR(255)
+	@PP_K_APQP_MODEL_HDR				INT
+	--@PP_APQP_TEAM_HDR_RFQ				VARCHAR(255)
 AS
 	DECLARE @VP_MENSAJE				VARCHAR(300) = ''
 			,@VP_K_APQP_TEAM_HDR			INT = 0
@@ -151,7 +163,8 @@ BEGIN TRY
 			(	[K_APQP_MODEL_HDR],
 				-- ===========================
 				[K_STATUS_APQP_DOCUMENT],	
-				[APQP_TEAM_HDR_RFQ],		[F_APQP_TEAM_HDR_CREATED],
+				--[APQP_TEAM_HDR_RFQ],		
+				[F_APQP_TEAM_HDR_CREATED],
 				-- ===========================
 				[L_APQP_TEAM_HDR_01],		[L_APQP_TEAM_HDR_02],
 				[L_APQP_TEAM_HDR_03],
@@ -161,8 +174,9 @@ BEGIN TRY
 	VALUES	
 			(	@PP_K_APQP_MODEL_HDR,
 				-- ============================
-				2,	--	STATUS	#2	= INCOMPLETO
-				@PP_APQP_TEAM_HDR_RFQ,		GETDATE(),
+				20,	--	STATUS	#2	= INCOMPLETO
+				--@PP_APQP_TEAM_HDR_RFQ,		
+				GETDATE(),
 				-- ============================
 				0,							0,
 				0,
@@ -290,15 +304,32 @@ GO
 IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[PG_UP_APQP_TEAM_HDR]') AND type in (N'P', N'PC'))
 	DROP PROCEDURE [dbo].[PG_UP_APQP_TEAM_HDR]
 GO
---		 EXECUTE [dbo].[PG_UP_APQP_TEAM_HDR] 0,139,  1 , 21 , 'TELFONO IP' , '76855545649' , '' , 'PANASONIC' , 'KX-T7630' , '2,890.50' , 1 , 1 , 11 , 1
+--		 EXECUTE [dbo].[PG_UP_APQP_TEAM_HDR] 0,139,		1,1,										
+--														0,1,0,							
+--														'2/3/4/5/6/7/8/9/10/11/12/13/14/15/16' , 
+--														'1/1/1/0/0/0/0/0/0/0/0/0/0/0/0' , 
+--														'0/0/0/0/0/0/0/0/0/0/0/0/0/0/0' , 
+--														'0/0/0/0/0/0/0/0/0/0/0/0/0/0/0' 
+--		 EXECUTE [dbo].[PG_UP_APQP_TEAM_HDR] 0,139,		1 , 1 ,										
+--														0 , 1 , 0 ,
+--														'2/3/4/5/6/7/8/9/10/11/12/13/14/15/16' , 
+--														'1/1/1/1/0/0/0/0/0/0/0/0/0/0/0' , 
+--														'0/0/0/0/0/0/0/0/0/0/0/0/0/0/0' , 
+--														'0/0/0/0/0/0/0/0/0/0/0/0/0/0/0'
+
+--		EXECUTE	[dbo].[PG_UP_APQP_TEAM_DET]	0,139,		'2/3/4/5/6/7/8/9/10/11/12/13/14/15/16' , 
+--														'1/1/1/0/0/0/0/0/0/0/0/0/0/0/0' , 
+--														'0/0/0/0/0/0/0/0/0/0/0/0/0/0/0' , 
+--														'0/0/0/0/0/0/0/0/0/0/0/0/0/0/0'
+
 CREATE PROCEDURE [dbo].[PG_UP_APQP_TEAM_HDR]
 	@PP_K_SISTEMA_EXE					INT,
 	@PP_K_USUARIO_ACCION				INT,
 	-- ===========================
+	@PP_K_APQP_MODEL_HDR				INT,
 	@PP_K_APQP_TEAM_HDR					INT,
-	@PP_K_APQP_MODEL_HDR				INT,	
 	-- ===========================
-	@PP_APQP_TEAM_HDR_RFQ				VARCHAR(255),
+	--@PP_APQP_TEAM_HDR_RFQ				VARCHAR(255),
 	-- ===========================
 	@PP_L_APQP_TEAM_HDR_01				INT,
 	@PP_L_APQP_TEAM_HDR_02				INT,
@@ -314,7 +345,7 @@ BEGIN TRY
 	-- /////////////////////////////////////////////////////////////////////
 	UPDATE	APQP_TEAM_HDR
 	SET		-- ===========================	= -- ===========================
-			[APQP_TEAM_HDR_RFQ]				= @PP_APQP_TEAM_HDR_RFQ			,	
+			--[APQP_TEAM_HDR_RFQ]				= @PP_APQP_TEAM_HDR_RFQ			,	
 			-- ===========================	= -- ===========================	
 			[L_APQP_TEAM_HDR_01]			= @PP_L_APQP_TEAM_HDR_01		,	
 			[L_APQP_TEAM_HDR_02]			= @PP_L_APQP_TEAM_HDR_02		,	
@@ -340,13 +371,24 @@ BEGIN TRY
 
 
 	-- /////////////////////////////////////////////////////////////////////
-	DECLARE @PP_K_STATUS_APQP_DOCUMENT	INT=0
-	
-	IF	(	SELECT	SUM(L_APQP_TEAM_DET_YES) + SUM(L_APQP_TEAM_DET_NO)	+ SUM(L_APQP_TEAM_DET_NA)
-			FROM	APQP_TEAM_DET
-			WHERE	K_APQP_TEAM_HDR				= @PP_K_APQP_TEAM_HDR	)	
-		>=
-		(	SELECT COUNT(K_APQP_TEAM_DET) FROM APQP_TEAM_DET WHERE K_APQP_TEAM_HDR=	@PP_K_APQP_TEAM_HDR)
+	DECLARE  @PP_K_STATUS_APQP_DOCUMENT		INT	=	0
+			,@PP_TOTAL_ACTIVIDADES			DECIMAL(10,2)	=	0
+			,@PP_TOTAL_COMPLETADAS			DECIMAL(10,2)	=	0
+			,@PP_SUMMARY					DECIMAL(10,2)
+
+	SELECT	@PP_TOTAL_COMPLETADAS	=	ISNULL(SUM(L_APQP_TEAM_DET_YES) + SUM(L_APQP_TEAM_DET_NO)	+ SUM(L_APQP_TEAM_DET_NA)	, 0)
+	FROM	APQP_TEAM_DET
+	WHERE	K_APQP_TEAM_HDR			=	@PP_K_APQP_TEAM_HDR
+
+	SELECT	@PP_TOTAL_ACTIVIDADES	=	COUNT(K_APQP_TEAM_DET) 
+	FROM	APQP_TEAM_DET
+	INNER JOIN	APQP_TEAM_ACTIVITY_LIST	ON	APQP_TEAM_ACTIVITY_LIST.K_APQP_TEAM_ACTIVITY_LIST	=	APQP_TEAM_DET.K_APQP_TEAM_ACTIVITY_LIST
+	WHERE	K_APQP_TEAM_HDR			=	@PP_K_APQP_TEAM_HDR
+	AND		APQP_TEAM_ACTIVITY_LIST.L_APQP_TEAM_ACTIVITY_LIST_VISIBLE<>0
+
+		SET 	@PP_SUMMARY	=	(	@PP_TOTAL_COMPLETADAS	/	@PP_TOTAL_ACTIVIDADES	)	*	100
+		
+	IF	(	@PP_TOTAL_COMPLETADAS	)		>=	(	@PP_TOTAL_ACTIVIDADES	)
 	BEGIN
 		SET @PP_K_STATUS_APQP_DOCUMENT	= 10
 	END
@@ -357,9 +399,10 @@ BEGIN TRY
 
 		UPDATE	APQP_TEAM_HDR
 		SET		-- ===========================	= -- ===========================	
-				[K_STATUS_APQP_DOCUMENT]		= @PP_K_STATUS_APQP_DOCUMENT
+				[K_STATUS_APQP_DOCUMENT]		= @PP_K_STATUS_APQP_DOCUMENT,
+				[APQP_TEAM_SUMMARY]				= @PP_SUMMARY
 		WHERE	K_APQP_TEAM_HDR				= @PP_K_APQP_TEAM_HDR
-		
+	
 		IF @@ROWCOUNT = 0
 		BEGIN
 			--DECLARE @VP_ERROR_2 VARCHAR(250)='El APQP_MODEL_HDR no fue actualizado. [APQP_MODEL_HDR#'+CONVERT(VARCHAR(10),@PP_K_APQP_MODEL_HDR)+']'
