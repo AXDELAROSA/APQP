@@ -7,7 +7,7 @@
 -- // CREATION DATE:	20210202
 -- ////////////////////////////////////////////////////////////// 
 
-USE [DATA_02]
+USE [DATA_02Pruebas]
 GO
 
 -- //////////////////////////////////////////////////////////////
@@ -32,7 +32,9 @@ CREATE TABLE [dbo].[APQP_FLOW_HDR]	(
 			[K_APQP_MODEL_HDR]					[INT],
 			-- ===========================
 			[K_STATUS_APQP_DOCUMENT]			[INT] NOT NULL DEFAULT 0,
-			[F_APQP_FLOW_HDR_CREATED]			[DATE]	NOT NULL
+			[F_APQP_FLOW_HDR_CREATED]			[DATE]	NOT NULL,
+			-- ===========================
+			[APQP_FLOW_SUMMARY]					[DECIMAL](10,2)	NOT NULL DEFAULT 0
 			-- ===========================
 
 ) ON [PRIMARY]
@@ -69,6 +71,8 @@ CREATE TABLE [dbo].[APQP_FLOW_DET]	(
 			[L_APQP_FLOW_DET_NA]				[INT] NOT NULL DEFAULT 0,
 			-- ===========================
 			[F_APQP_FLOW_DET_COMPLETED]			[DATE]	NULL,
+			-- ===========================
+			[O_APQP_FLOW_DET]					[INT] NOT NULL,
 			-- ===========================
 			[C_APQP_FLOW_DET]					[VARCHAR](500) NOT NULL DEFAULT ''
 ) ON [PRIMARY]

@@ -75,7 +75,9 @@ CREATE TABLE [dbo].[APQP_TEAM_DET]	(
 			[L_APQP_TEAM_DET_NO]				[INT] NOT NULL DEFAULT 0,
 			[L_APQP_TEAM_DET_NA]				[INT] NOT NULL DEFAULT 0,
 			-- ===========================
-			[F_APQP_TEAM_DET_COMPLETED]			[DATE]	NULL
+			[F_APQP_TEAM_DET_COMPLETED]			[DATE]	NULL,
+			-- ===========================
+			[O_APQP_TEAM_DET]					[INT] NOT NULL
 ) ON [PRIMARY]
 GO
 ALTER TABLE [dbo].[APQP_TEAM_DET]

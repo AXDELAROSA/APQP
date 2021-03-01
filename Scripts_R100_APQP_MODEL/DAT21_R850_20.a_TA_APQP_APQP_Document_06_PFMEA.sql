@@ -7,7 +7,7 @@
 -- // CREATION DATE:	20210202
 -- ////////////////////////////////////////////////////////////// 
 
-USE [DATA_02]
+USE [DATA_02Pruebas]
 GO
 
 -- //////////////////////////////////////////////////////////////
@@ -32,7 +32,9 @@ CREATE TABLE [dbo].[APQP_PFMEA_HDR]	(
 			[K_APQP_MODEL_HDR]					[INT],
 			-- ===========================
 			[K_STATUS_APQP_DOCUMENT]			[INT] NOT NULL DEFAULT 0,
-			[F_APQP_PFMEA_HDR_CREATED]			[DATE]	NOT NULL
+			[F_APQP_PFMEA_HDR_CREATED]			[DATE]	NOT NULL,
+			-- ===========================
+			[APQP_PFMEA_SUMMARY]				[DECIMAL](10,2)	NOT NULL DEFAULT 0
 			-- ===========================
 
 ) ON [PRIMARY]
@@ -68,7 +70,9 @@ CREATE TABLE [dbo].[APQP_PFMEA_DET]	(
 			[L_APQP_PFMEA_DET_NO]				[INT] NOT NULL DEFAULT 0,
 			[L_APQP_PFMEA_DET_NA]				[INT] NOT NULL DEFAULT 0,
 			-- ===========================
-			[F_APQP_PFMEA_DET_COMPLETED]			[DATE]	NULL,
+			[F_APQP_PFMEA_DET_COMPLETED]		[DATE]	NULL,
+			-- ===========================
+			[O_APQP_PFMEA_DET]					[INT] NOT NULL,
 			-- ===========================
 			[C_APQP_PFMEA_DET]					[VARCHAR](500) NOT NULL DEFAULT ''
 ) ON [PRIMARY]

@@ -7,7 +7,7 @@
 -- // CREATION DATE:	20210202
 -- ////////////////////////////////////////////////////////////// 
 
-USE [DATA_02]
+USE [DATA_02Pruebas]
 GO
 
 -- //////////////////////////////////////////////////////////////
@@ -31,8 +31,12 @@ CREATE TABLE [dbo].[APQP_TOOL_HDR]	(
 			[K_APQP_TOOL_HDR]					[INT] IDENTITY (1,1)	NOT NULL,
 			[K_APQP_MODEL_HDR]					[INT],
 			-- ===========================
+			[K_TYPE_APQP_DOCUMENT]				[INT] NOT NULL DEFAULT 20,	-- ESTE CAMPO ES PARA LA VISTA DEL INDEX, EL TIPO DE DOCUMENTO SE DIVIDE POR CADA UNA DE LAS PESTAÑAS DE EXCEL.
+			-- ===========================
 			[K_STATUS_APQP_DOCUMENT]			[INT] NOT NULL DEFAULT 0,
-			[F_APQP_TOOL_HDR_CREATED]			[DATE]	NOT NULL
+			[F_APQP_TOOL_HDR_CREATED]			[DATE]	NOT NULL,
+			-- ===========================
+			[APQP_TOOL_SUMMARY]					[DECIMAL](10,2)	NOT NULL DEFAULT 0
 			-- ===========================
 
 ) ON [PRIMARY]
@@ -69,6 +73,8 @@ CREATE TABLE [dbo].[APQP_TOOL_DET]	(
 			[L_APQP_TOOL_DET_NA]				[INT] NOT NULL DEFAULT 0,
 			-- ===========================
 			[F_APQP_TOOL_DET_COMPLETED]			[DATE]	NULL,
+			-- ===========================
+			[O_APQP_TOOL_DET]					[INT] NOT NULL,
 			-- ===========================
 			[C_APQP_TOOL_DET]					[VARCHAR](500) NOT NULL DEFAULT ''
 ) ON [PRIMARY]

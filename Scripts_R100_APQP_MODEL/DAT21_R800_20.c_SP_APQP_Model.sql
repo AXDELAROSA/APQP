@@ -132,7 +132,7 @@ GO
 IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[PG_IN_APQP_MODEL_HDR]') AND type in (N'P', N'PC'))
 	DROP PROCEDURE [dbo].[PG_IN_APQP_MODEL_HDR]
 GO
---		 EXECUTE [dbo].[PG_IN_APQP_MODEL_HDR] 0,139,
+--		 EXECUTE [dbo].[PG_IN_APQP_MODEL_HDR] 0,139,  'TOOL' , 'TOOL ADD' , 46 , 1 , 1 , 1 , '20' , '2021/02/19' , '1020' 
 CREATE PROCEDURE [dbo].[PG_IN_APQP_MODEL_HDR]
 	@PP_K_SISTEMA_EXE					INT,
 	@PP_K_USUARIO_ACCION				INT,
@@ -222,9 +222,35 @@ BEGIN TRY
 
 	EXECUTE	[dbo].[PG_IN_APQP_TEAM_HDR]		@PP_K_SISTEMA_EXE	,@PP_K_USUARIO_ACCION,
 											-- ===========================
-											@VP_K_APQP_MODEL_HDR--,	@PP_APQP_ECN_RFQ_SP_REFERENCE
+											@VP_K_APQP_MODEL_HDR
 
+	EXECUTE	[dbo].[PG_IN_APQP_TOOL_HDR]		@PP_K_SISTEMA_EXE	,@PP_K_USUARIO_ACCION,
+											-- ===========================
+											@VP_K_APQP_MODEL_HDR
 
+	EXECUTE	[dbo].[PG_IN_APQP_QUAL_HDR]		@PP_K_SISTEMA_EXE	,@PP_K_USUARIO_ACCION,
+											-- ===========================
+											@VP_K_APQP_MODEL_HDR
+
+	EXECUTE	[dbo].[PG_IN_APQP_FLOOR_HDR]	@PP_K_SISTEMA_EXE	,@PP_K_USUARIO_ACCION,
+											-- ===========================
+											@VP_K_APQP_MODEL_HDR
+
+	EXECUTE	[dbo].[PG_IN_APQP_FLOw_HDR]		@PP_K_SISTEMA_EXE	,@PP_K_USUARIO_ACCION,
+											-- ===========================
+											@VP_K_APQP_MODEL_HDR
+
+	EXECUTE	[dbo].[PG_IN_APQP_PFMEA_HDR]	@PP_K_SISTEMA_EXE	,@PP_K_USUARIO_ACCION,
+											-- ===========================
+											@VP_K_APQP_MODEL_HDR
+
+	EXECUTE	[dbo].[PG_IN_APQP_CONTROL_HDR]	@PP_K_SISTEMA_EXE	,@PP_K_USUARIO_ACCION,
+											-- ===========================
+											@VP_K_APQP_MODEL_HDR
+
+	EXECUTE	[dbo].[PG_IN_APQP_RISK_HDR]		@PP_K_SISTEMA_EXE	,@PP_K_USUARIO_ACCION,
+											-- ===========================
+											@VP_K_APQP_MODEL_HDR
 	-- /////////////////////////////////////////////////////////////////////
 COMMIT TRANSACTION 
 END TRY

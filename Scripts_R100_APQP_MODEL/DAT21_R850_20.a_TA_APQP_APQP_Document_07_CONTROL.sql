@@ -7,7 +7,7 @@
 -- // CREATION DATE:	20210202
 -- ////////////////////////////////////////////////////////////// 
 
-USE [DATA_02]
+USE [DATA_02Pruebas]
 GO
 
 -- //////////////////////////////////////////////////////////////
@@ -28,11 +28,13 @@ GO
 -- ////////////////////////////////////////////////////////////////
 CREATE TABLE [dbo].[APQP_CONTROL_HDR]	(
 			-- ============================	
-			[K_APQP_CONTROL_HDR]					[INT] IDENTITY (1,1)	NOT NULL,
+			[K_APQP_CONTROL_HDR]				[INT] IDENTITY (1,1)	NOT NULL,
 			[K_APQP_MODEL_HDR]					[INT],
 			-- ===========================
 			[K_STATUS_APQP_DOCUMENT]			[INT] NOT NULL DEFAULT 0,
-			[F_APQP_CONTROL_HDR_CREATED]			[DATE]	NOT NULL
+			[F_APQP_CONTROL_HDR_CREATED]		[DATE]	NOT NULL,
+			-- ===========================
+			[APQP_CONTROL_SUMMARY]				[DECIMAL](10,2)	NOT NULL DEFAULT 0
 			-- ===========================
 
 ) ON [PRIMARY]
@@ -65,10 +67,12 @@ CREATE TABLE [dbo].[APQP_CONTROL_DET]	(
 			[K_APQP_CONTROL_ACTIVITY_LIST]			[INT] NOT NULL DEFAULT 0,
 			-- ===========================
 			[L_APQP_CONTROL_DET_YES]				[INT] NOT NULL DEFAULT 0,
-			[L_APQP_CONTROL_DET_NO]				[INT] NOT NULL DEFAULT 0,
-			[L_APQP_CONTROL_DET_NA]				[INT] NOT NULL DEFAULT 0,
+			[L_APQP_CONTROL_DET_NO]					[INT] NOT NULL DEFAULT 0,
+			[L_APQP_CONTROL_DET_NA]					[INT] NOT NULL DEFAULT 0,
 			-- ===========================
 			[F_APQP_CONTROL_DET_COMPLETED]			[DATE]	NULL,
+			-- ===========================
+			[O_APQP_CONTROL_DET]					[INT] NOT NULL,
 			-- ===========================
 			[C_APQP_CONTROL_DET]					[VARCHAR](500) NOT NULL DEFAULT ''
 ) ON [PRIMARY]
