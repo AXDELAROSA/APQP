@@ -335,73 +335,78 @@ EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,20,10,	'Control plan 
 EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,20,20,	'Layout inspection?'																														,'O. Decena'
 EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,20,30,	'Engineering performance testing?'																											,'O. Decena'
 EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,20,40,	'Problem resolution analysis?'																												,'O. Decena'
-EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,25,00,	'Is there a documented training program that:'																								,' --- '
-EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,25,10,	'Includes all employees?'																													,'A. de la Ree'
-EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,25,20,	'Lists whose been trained?'																													,'A. de la Ree'
-EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,25,30,	'Provides a training schedule?'																												,'A. de la Ree'
 
 -- ==================================================================================================================================================================
-EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,30,00,	'Has training been completed for:'											,''
-
-EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,30,10,	'Statistical process control?'																												,'J. Holguin/ O. Decena'
-EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,30,20,	'Capability studies?'																														,'J. Holguin/ O. Decena'
-EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,30,30,	'Problem solving?'																															,'J. Holguin/ O. Decena'
-EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,30,40,	'Mistake proofing?'																															,'J. Holguin/ O. Decena'
-EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,30,50,	'Other topics as identified?'																												,' --- '
-EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,30,60,	'Is each operation provided with process instructions that are keyed to the control plan?'													,'O. Decena'
-EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,30,70,	'Are standard operator instructions available at each operation?'																			,'O. Decena / G. Mata'
-EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,30,80,	'Were operator/team leaders involved in developing standard operator instructions?'															,'O. Decena / G. Mata'
+EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,30,00,	'Is there a documented training program that:'																								,' --- '
+EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,30,10,	'Includes all employees?'																													,'A. de la Ree'
+EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,30,20,	'Lists whose been trained?'																													,'A. de la Ree'
+EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,30,30,	'Provides a training schedule?'																												,'A. de la Ree'
 
 -- ==================================================================================================================================================================
-EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,40,00,	'Do inspection instructions include:'								,''
+EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,40,00,	'Has training been completed for:'											,''
 
-EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,40,10,	'Easily understood engineering performance specifications?'													,'O. Decena / G. Mata'
-EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,40,20,	'Test frequencies?'																							,'O. Decena / G. Mata'
-EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,40,30,	'Sample sizes?'																								,'O. Decena / G. Mata'
-EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,40,40,	'Reaction plans?'																							,'O. Decena / G. Mata'
-EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,40,50,	'Documentation?'																							,'O. Decena / G. Mata'
-EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,45,00,	'Are visual aids:'																							,' --- '
-EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,45,10,	'Easily understood?'																						,'O. Decena / G. Mata'
-EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,45,20,	'Available?'																								,'O. Decena / G. Mata'
-EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,45,30,	'Accessible?'																								,'O. Decena / G. Mata'
-EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,45,40,	'Approved?'																									,'O. Decena / G. Mata'
-EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,45,50,	'Dated and current?'																						,'O. Decena / G. Mata'
-EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,45,60,	'Is there a procedure to implement, maintain, and establish reaction plans for statistical control charts?'	,'O. Decena'
-EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,45,70,	'Is there an effective root cause analysis system in place?'												,'O. Decena'
-EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,45,80,	'Have provisions been made to place the latest drawings and specifications at the point of the inspection?'	,'G. Mata / O. Decena'
-EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,45,90,	'Are forms/logs available for appropriate personnel to record inspection results?'							,'O. Decena'
+EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,40,10,	'Statistical process control?'																												,'J. Holguin/ O. Decena'
+EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,40,20,	'Capability studies?'																														,'J. Holguin/ O. Decena'
+EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,40,30,	'Problem solving?'																															,'J. Holguin/ O. Decena'
+EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,40,40,	'Mistake proofing?'																															,'J. Holguin/ O. Decena'
+EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,40,50,	'Other topics as identified?'																												,' --- '
+EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,40,60,	'Is each operation provided with process instructions that are keyed to the control plan?'													,'O. Decena'
+EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,40,70,	'Are standard operator instructions available at each operation?'																			,'O. Decena / G. Mata'
+EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,40,80,	'Were operator/team leaders involved in developing standard operator instructions?'															,'O. Decena / G. Mata'
 
 -- ==================================================================================================================================================================
-EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,50,00,	'Have provisions been made to place the following at the monitored operation:'								,' --- '
+EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,50,00,	'Do inspection instructions include:'								,''
 
-EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,50,10,	'Inspection gages?'																							,'O. Decena'
-EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,50,20,	'Gage instructions?'																						,'O. Decena'
-EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,50,30,	'Reference samples?'																						,'O. Decena'
-EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,50,40,	'Inspection logs?'																							,'O. Decena'
-EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,50,50,	'Have provisions been made to certify and routinely calibrate gages and test equipment?'					,'O. Decena'
-
--- ==================================================================================================================================================================
-EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,60,00,	'Have required measurement system capability studies been:'																		,' --- '
-
-EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,60,10,	'Completed?'																													,'O. Decena'
-EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,60,20,	'Acceptable?'																													,'O. Decena'
-EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,60,30,	'Are layout inspection equipment and facilities adequate to provide initial and ongoing layout of all details and components?'	,'O. Decena'
+EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,50,10,	'Easily understood engineering performance specifications?'													,'O. Decena / G. Mata'
+EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,50,20,	'Test frequencies?'																							,'O. Decena / G. Mata'
+EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,50,30,	'Sample sizes?'																								,'O. Decena / G. Mata'
+EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,50,40,	'Reaction plans?'																							,'O. Decena / G. Mata'
+EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,50,50,	'Documentation?'																							,'O. Decena / G. Mata'
 
 -- ==================================================================================================================================================================
-EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,70,00,	'Is there a procedure for controlling incoming product that identifies:'									,' --- '
+EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,60,00,	'Are visual aids:'																							,' --- '
 
-EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,70,10,	'Characteristics to be inspected?'																			,'O. Decena'
-EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,70,20,	'Frequency of inspection?'																					,'O. Decena'
-EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,70,30,	'Sample size?'																								,'O. Decena'
-EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,70,40,	'Designated location for approved product?'																	,'O. Decena / G. Mata'
-EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,70,50,	'Disposition of nonconforming products?'																	,'M. Carrasco'
-EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,70,60,	'Is there a procedure to identify, segregate, and control nonconforming products to prevent shipment?'		,'O. Decena'
-EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,70,70,	'Are rework/repair procedures available?'																	,'N / A'
-EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,70,80,	'Is there a procedure to requalify repaired/reworked material?'												,'N / A'
-EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,70,90,	'Is there an appropriate lot traceability procedure?'														,'O. Decena / G. Mata'
-EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,70,100,	'Are periodic audits of outgoing products planned and implemented?'											,'O. Decena'
-EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,70,110,	'Are periodic surveys of the quality system planned and implemented?'										,'M. Carrasco'
-EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,70,120,	'Has the customer approved the packaging specification?'													,'O. Decena'
+EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,60,10,	'Easily understood?'																						,'O. Decena / G. Mata'
+EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,60,20,	'Available?'																								,'O. Decena / G. Mata'
+EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,60,30,	'Accessible?'																								,'O. Decena / G. Mata'
+EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,60,40,	'Approved?'																									,'O. Decena / G. Mata'
+EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,60,50,	'Dated and current?'																						,'O. Decena / G. Mata'
+EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,60,60,	'Is there a procedure to implement, maintain, and establish reaction plans for statistical control charts?'	,'O. Decena'
+EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,60,70,	'Is there an effective root cause analysis system in place?'												,'O. Decena'
+EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,60,80,	'Have provisions been made to place the latest drawings and specifications at the point of the inspection?'	,'G. Mata / O. Decena'
+EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,60,90,	'Are forms/logs available for appropriate personnel to record inspection results?'							,'O. Decena'
+
+-- ==================================================================================================================================================================
+EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,70,00,	'Have provisions been made to place the following at the monitored operation:'								,' --- '
+
+EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,70,10,	'Inspection gages?'																							,'O. Decena'
+EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,70,20,	'Gage instructions?'																						,'O. Decena'
+EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,70,30,	'Reference samples?'																						,'O. Decena'
+EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,70,40,	'Inspection logs?'																							,'O. Decena'
+EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,70,50,	'Have provisions been made to certify and routinely calibrate gages and test equipment?'					,'O. Decena'
+
+-- ==================================================================================================================================================================
+EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,80,00,	'Have required measurement system capability studies been:'																		,' --- '
+
+EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,80,10,	'Completed?'																													,'O. Decena'
+EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,80,20,	'Acceptable?'																													,'O. Decena'
+EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,80,30,	'Are layout inspection equipment and facilities adequate to provide initial and ongoing layout of all details and components?'	,'O. Decena'
+
+-- ==================================================================================================================================================================
+EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,90,00,	'Is there a procedure for controlling incoming product that identifies:'									,' --- '
+
+EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,90,10,	'Characteristics to be inspected?'																			,'O. Decena'
+EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,90,20,	'Frequency of inspection?'																					,'O. Decena'
+EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,90,30,	'Sample size?'																								,'O. Decena'
+EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,90,40,	'Designated location for approved product?'																	,'O. Decena / G. Mata'
+EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,90,50,	'Disposition of nonconforming products?'																	,'M. Carrasco'
+EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,90,60,	'Is there a procedure to identify, segregate, and control nonconforming products to prevent shipment?'		,'O. Decena'
+EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,90,70,	'Are rework/repair procedures available?'																	,'N / A'
+EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,90,80,	'Is there a procedure to requalify repaired/reworked material?'												,'N / A'
+EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,90,90,	'Is there an appropriate lot traceability procedure?'														,'O. Decena / G. Mata'
+EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,90,100,	'Are periodic audits of outgoing products planned and implemented?'											,'O. Decena'
+EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,90,110,	'Are periodic surveys of the quality system planned and implemented?'										,'M. Carrasco'
+EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,90,120,	'Has the customer approved the packaging specification?'													,'O. Decena'
 SET NOCOUNT OFF
 GO
 
