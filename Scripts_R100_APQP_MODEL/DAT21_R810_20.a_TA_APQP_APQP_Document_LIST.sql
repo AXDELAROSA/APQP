@@ -323,7 +323,7 @@ SET NOCOUNT ON
 -- ==================================================================================================================================================================
 EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,0,10,00,	'QUAL CHECK GENERAL'															,''
 
-EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,10,10,	'Is the assistance of the customer[ s quality assurance or product engineering activity needed to develop or concur to the control plan?'	,'J. Holguin/ O. Decena'
+EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,10,10,	'Is the assistance of the customer´s quality assurance or product engineering activity needed to develop or concur to the control plan?'	,'J. Holguin/ O. Decena'
 EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,10,20,	'Has the supplier identified who will be the quality liaison with the customer?'															,'J. Holguin/ O. Decena'
 EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,10,30,	'Has the supplier identified who will be the quality liaison with its suppliers?'															,'J. Holguin/ O. Decena'
 EXECUTE [dbo].[PG_CI_APQP_QUAL_ACTIVITY_LIST]  0, 139,	1,1,10,40,	'Has the quality assurance system been reviewed using the Chrysler, Ford, and General Motors Quality System Assessment?'					,'O. Decena'
