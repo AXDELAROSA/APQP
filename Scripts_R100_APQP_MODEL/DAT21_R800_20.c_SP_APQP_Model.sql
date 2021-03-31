@@ -216,6 +216,21 @@ BEGIN TRY
 											@PP_F_APQP_MODEL_HDR_CREATED
 
 	--========================================================================================
+	--		SE INSERTA EL VALOR POR DEFAULT PARA LAS DOS PRIMERAS ACTIVIDADES.
+	
+	UPDATE	APQP_MODEL_DET
+	SET		[F_APQP_MODEL_DET_COMPLETED]	= GETDATE(),
+			[K_STATUS_APQP_MODEL]			= 11
+	WHERE	[K_APQP_MODEL_HDR]				= @VP_K_APQP_MODEL_HDR
+	AND		[K_APQP_MODEL_ACTIVITY_LIST]	IN (1,2)
+	
+	IF @@ROWCOUNT = 0
+	BEGIN
+		SET @VP_MENSAJE='The record was not updated. Activities (1 & 2)'
+		RAISERROR (@VP_MENSAJE, 16, 1 )
+	END
+		
+	--========================================================================================
 	--========================================================================================
 	--	A PARTIR DE AQUÍ SE INSERTARAN LOS REGISTROS PARA CADA UNO DE LOS DOCUMENTOS DEL MODELO
 	--	ES UN INSERT POR DOCUMENTO	(INDEX, TEAM, TOOL, QUAL, FLOOR, FLOW, PFMEA, CONTROL, RISK)

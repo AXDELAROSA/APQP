@@ -228,7 +228,7 @@ AS
 	DECLARE @VP_RESULTADO				VARCHAR(300) = ''		
 	-- ///////////////////////////////////////////
 	IF @VP_RESULTADO=''
-		EXECUTE [dbo].[PG_RN_ARCUSFIL_PROGRAM_EXISTS]		@PP_K_SISTEMA_EXE, @PP_K_USUARIO_ACCION,
+		EXECUTE [dbo].[PG_RN_ARCUSFIL_PROGRAM_EXISTS]	@PP_K_SISTEMA_EXE, @PP_K_USUARIO_ACCION,
 														@PP_K_ARCUSFIL_PROGRAM,	 
 														@OU_RESULTADO_VALIDACION = @VP_RESULTADO		OUTPUT
 	-- //////////////////////////////////////	
