@@ -7,7 +7,7 @@
 -- // CREATION DATE:	20210122
 -- ////////////////////////////////////////////////////////////// 
 
-USE [DATA_02Pruebas]
+USE [DATA_02]
 GO
 
 -- //////////////////////////////////////////////////////////////
@@ -101,6 +101,7 @@ EXECUTE [dbo].[PG_CI_STATUS_APQP_MODEL]  0, 139,	02, 'INACTIVA'				,'' , 'INACT'
 --	ESTATUS PARA EL CIERRE DE LAS ACTIVIDADES
 EXECUTE [dbo].[PG_CI_STATUS_APQP_MODEL]  0, 139,	10, 'ABIERTA'				,'' , 'ABIER'	, 10 , 1	,20
 EXECUTE [dbo].[PG_CI_STATUS_APQP_MODEL]  0, 139,	11, 'CERRADA'				,'' , 'CERRA'	, 20 , 1	,20
+EXECUTE [dbo].[PG_CI_STATUS_APQP_MODEL]  0, 139,	12, 'EN PROCESO'			,'' , 'PROCE'	, 30 , 1	,30
 SET NOCOUNT OFF
 GO
 
@@ -173,10 +174,18 @@ CREATE TABLE [dbo].[APQP_MODEL_ACTIVITY_LIST]	(
 			[D_APQP_MODEL_ACTIVITY_LIST]				[VARCHAR](255),
 			[RESPONSIBLE_APQP_MODEL_ACTIVITY_LIST]		[VARCHAR](255)	NOT NULL,
 			-- ===========================
+			--	ESTOS CAMPOS SE CREAN CON EL FIN DE IDENTIFICAR SI LA ACTIVIDAD SE IMPLEMENTA CUANDO ES NUEVO MODELO, CAMBIO DE MODELO O ALGÚN OTRO PARAMETRO DE CAMBIO QUE SURGA.
+			--	SE ASIGNA LA ACTIVIDAD A CADA UNO DE LOS TIPOS Y SE LE ASIGNA LA NUMERACIÓN CORRESPONDIENTE.
 			[L_APQP_MODEL_TYPE_01]						[INT] NOT NULL DEFAULT 1,	-- TYPE	= NEW MODEL
-			[L_APQP_MODEL_TYPE_02]						[INT] NOT NULL DEFAULT 0,
-			[L_APQP_MODEL_TYPE_03]						[INT] NOT NULL DEFAULT 0,
-			[L_APQP_MODEL_TYPE_04]						[INT] NOT NULL DEFAULT 0,
+			[N_APQP_MODEL_TYPE_01]						[VARCHAR](10) NOT NULL DEFAULT 0,	-- # DE ACTIVIDAD EN LISTADO.
+			-- ===========================			
+			-- AL INICIO DEL PROYECTO SOLO SE CONTEMPLAN NUEVOS MODELOS EN CASO DE AGREGAR MÁS TIPOS SE DEBEN HABILITAR ESTOS CAMPOS Y ASIGNAR LOS VALORES CORRESPONDIENTES.
+			--[L_APQP_MODEL_TYPE_02]						[INT] NOT NULL DEFAULT 0,
+			--[N_APQP_MODEL_TYPE_02]						[VARCHAR](10) NOT NULL DEFAULT 0,	-- # DE ACTIVIDAD EN LISTADO.
+			--[L_APQP_MODEL_TYPE_03]						[INT] NOT NULL DEFAULT 0,
+			--[N_APQP_MODEL_TYPE_03]						[VARCHAR](10) NOT NULL DEFAULT 0,	-- # DE ACTIVIDAD EN LISTADO.
+			--[L_APQP_MODEL_TYPE_04]						[INT] NOT NULL DEFAULT 0,
+			--[N_APQP_MODEL_TYPE_04]						[VARCHAR](10) NOT NULL DEFAULT 0,	-- # DE ACTIVIDAD EN LISTADO.
 			-- ===========================
 ) ON [PRIMARY]
 GO
@@ -199,9 +208,9 @@ CREATE PROCEDURE [dbo].[PG_CI_APQP_MODEL_ACTIVITY_LIST]
 	--@PP_K_APQP_MODEL_ACTIVITY_LIST				INT,
 	-- ===========================
 	@PP_L_APQP_MODEL_ACTIVITY_LIST_01			INT,
-	@PP_L_APQP_MODEL_ACTIVITY_LIST_02			INT,
-	@PP_L_APQP_MODEL_ACTIVITY_LIST_03			INT,
-	@PP_L_APQP_MODEL_ACTIVITY_LIST_04			INT,
+	@PP_N_APQP_MODEL_ACTIVITY_LIST_01			VARCHAR(10),
+	--@PP_L_APQP_MODEL_ACTIVITY_LIST_03			INT,
+	--@PP_L_APQP_MODEL_ACTIVITY_LIST_04			INT,
 	@PP_RESPONSIBLE_APQP_MODEL_ACTIVITY_LIST	VARCHAR(255),
 	@PP_D_APQP_MODEL_ACTIVITY_LIST				VARCHAR(255)
 AS
@@ -210,46 +219,55 @@ AS
 			(	--	[K_APQP_MODEL_ACTIVITY_LIST],	
 				[D_APQP_MODEL_ACTIVITY_LIST], 
 				[RESPONSIBLE_APQP_MODEL_ACTIVITY_LIST],
-				[L_APQP_MODEL_TYPE_01],			[L_APQP_MODEL_TYPE_02],
-				[L_APQP_MODEL_TYPE_03],			[L_APQP_MODEL_TYPE_04]			)
+				[L_APQP_MODEL_TYPE_01],			[N_APQP_MODEL_TYPE_01]			)
+				--	[L_APQP_MODEL_TYPE_03],			[L_APQP_MODEL_TYPE_04]			)
 	VALUES	
 			(	--	@PP_K_APQP_MODEL_ACTIVITY_LIST, 
 				@PP_D_APQP_MODEL_ACTIVITY_LIST,
 				@PP_RESPONSIBLE_APQP_MODEL_ACTIVITY_LIST,
-				@PP_L_APQP_MODEL_ACTIVITY_LIST_01,	@PP_L_APQP_MODEL_ACTIVITY_LIST_02,
-				@PP_L_APQP_MODEL_ACTIVITY_LIST_03,	@PP_L_APQP_MODEL_ACTIVITY_LIST_04			)		
+				@PP_L_APQP_MODEL_ACTIVITY_LIST_01,	@PP_N_APQP_MODEL_ACTIVITY_LIST_01				)
+				--	@PP_L_APQP_MODEL_ACTIVITY_LIST_03,	@PP_L_APQP_MODEL_ACTIVITY_LIST_04			)		
 	-- //////////////////////////////////////////////////////////////
 GO
 SET NOCOUNT ON
-EXECUTE [dbo].[PG_CI_APQP_MODEL_ACTIVITY_LIST]  0, 139,	1,0,0,0,	'OMAR D.'										,'FECHA DE AVISO DEL CAMBIO O INICIO'
-EXECUTE [dbo].[PG_CI_APQP_MODEL_ACTIVITY_LIST]  0, 139,	1,0,0,0,	'JORGE H, OMAR D.'								,'INICIO DEL PROGRAMA O CAMBIO (IMPLEMENTACION)'
-EXECUTE [dbo].[PG_CI_APQP_MODEL_ACTIVITY_LIST]  0, 139,	1,0,0,0,	'OMAR D. BILL REID'								,'COTIZACIÓN'
-EXECUTE [dbo].[PG_CI_APQP_MODEL_ACTIVITY_LIST]  0, 139,	1,0,0,0,	'GUILLERMO M, JORGE H.'							,'CAPACIDAD Y FACTIBILIDAD DE CORTE (EVALUACION DE REQUERIMIENTOS DE VOLUMEN Y DE ENTREGA)'
-EXECUTE [dbo].[PG_CI_APQP_MODEL_ACTIVITY_LIST]  0, 139,	1,0,0,0,	'OMAR D. MIGUEL C.'								,'DIBUJOS, PLANOS O MYLARS O ESPECIFICACIONES DE INGENIERIA NUEVAS (VER ACTIVIDAD #22)'
-EXECUTE [dbo].[PG_CI_APQP_MODEL_ACTIVITY_LIST]  0, 139,	1,0,0,0,	'GUILLERMO M, OMAR D.'							,'COTIZACIÓN Y COMPRA DE HERRAMENTAL DE CORTE'
-EXECUTE [dbo].[PG_CI_APQP_MODEL_ACTIVITY_LIST]  0, 139,	1,0,0,0,	'OMAR D, GUILLERMO M.'							,'DISPONIBILIDAD DE MATERIA PRIMA, CANTIDADES Y COLORES'
-EXECUTE [dbo].[PG_CI_APQP_MODEL_ACTIVITY_LIST]  0, 139,	1,0,0,0,	'PATRICIA CH, JORGE H, GUILLERMO M.'			,'REQUERIMIENTOS DE MANO DE OBRA ADICIONAL'
-EXECUTE [dbo].[PG_CI_APQP_MODEL_ACTIVITY_LIST]  0, 139,	1,0,0,0,	'GUILLERMO M, JORGE H.'							,'NECESIDES DE EQUIPO ADICIONAL O DE MEJORAS AL YA EXISTENTE'
-EXECUTE [dbo].[PG_CI_APQP_MODEL_ACTIVITY_LIST]  0, 139,	1,0,0,0,	'PATRICIA CHAVEZ, JORGE H, GUILLERMO M.'		,'NECESIDADES DE ENTRENAMIENTO ADICIONALES'
-EXECUTE [dbo].[PG_CI_APQP_MODEL_ACTIVITY_LIST]  0, 139,	1,0,0,0,	'MIGUEL C, CARLOS ZAMORA.'						,'DOCUMENTACIÓN DE CALIDAD, CONTROL PLAN, FMEA´S, DIAGRAMA DE FLUJO, ETC.(PPAP)'
-EXECUTE [dbo].[PG_CI_APQP_MODEL_ACTIVITY_LIST]  0, 139,	1,0,0,0,	'MIGUEL C, GUILLERMO M.'						,'EQUIPO DE INSPECCIÓN ADICIONAL, DISPONIBILIDAD DE CRITERIOS DE CALIDAD, MASTERS, AYUDAS VISUALES, ETC.'
-EXECUTE [dbo].[PG_CI_APQP_MODEL_ACTIVITY_LIST]  0, 139,	1,0,0,0,	'GUILLERMO M, MIGUEL C.'						,'DOCUMENTACIÓN DE PISO, INSTR DE TRAB. Y CRITERIOS'
-EXECUTE [dbo].[PG_CI_APQP_MODEL_ACTIVITY_LIST]  0, 139,	1,0,0,0,	'MIGUEL C, OMAR D.'								,'REQUERIMIENTOS DE MONITOREO, INSPECCIÓN Y MEDICION DEL PRODUCTO O DEL PROCESO.'
-EXECUTE [dbo].[PG_CI_APQP_MODEL_ACTIVITY_LIST]  0, 139,	1,0,0,0,	'MIGUEL C, OMAR D.'								,'ESPECIFICACIONES ADICIONALES O ESPECIALES DE INGENIERIA, ESTO INCLUYE CARACTERISTICAS CRITICAS'
-EXECUTE [dbo].[PG_CI_APQP_MODEL_ACTIVITY_LIST]  0, 139,	1,0,0,0,	'MIGUEL C, OMAR D.'								,'CARACTERISTICAS ESPECIALES DEL CLIENTE (MANUAL DE PROVEEDORES)'
-EXECUTE [dbo].[PG_CI_APQP_MODEL_ACTIVITY_LIST]  0, 139,	1,0,0,0,	'GUILLERMO M, MIGUEL C.'						,'ARCHIVOS DE CORTE'
-EXECUTE [dbo].[PG_CI_APQP_MODEL_ACTIVITY_LIST]  0, 139,	1,0,0,0,	'MIGUEL C, OMAR D.'								,'VALIDACIONES DE ACCIONES/MUESTRAS EN AREAS MODELO ANTES DE IMPLEMENTAR MASIVAMENTE'
-EXECUTE [dbo].[PG_CI_APQP_MODEL_ACTIVITY_LIST]  0, 139,	1,0,0,0,	'MIGUEL C, OMAR D.'								,'MASTERS DE COLOR, MANUAL DE MARCAS NATURALES Y/O CUALQUIER OTRO CRITERIO DE CALIDAD QUE SE REQUIERA'
-EXECUTE [dbo].[PG_CI_APQP_MODEL_ACTIVITY_LIST]  0, 139,	1,0,0,0,	'OMAR D.'										,'NO. DE PARTE EN EL SISTEMA'
-EXECUTE [dbo].[PG_CI_APQP_MODEL_ACTIVITY_LIST]  0, 139,	1,0,0,0,	'MIGUEL C, GUILLERMO M'							,'INFORMACIÓN DE EMPAQUE Y ETIQUETAS'
-EXECUTE [dbo].[PG_CI_APQP_MODEL_ACTIVITY_LIST]  0, 139,	1,0,0,0,	'GUILLERMO M.'									,'INVENTARIOS (OBSOLESCENCIAS)'
-EXECUTE [dbo].[PG_CI_APQP_MODEL_ACTIVITY_LIST]  0, 139,	1,0,0,0,	'OMAR D.'										,'RECORDATORIO DE REQUERIMIENTO DE CONFIDENCIALIDAD DE IATF 16949'
-EXECUTE [dbo].[PG_CI_APQP_MODEL_ACTIVITY_LIST]  0, 139,	1,0,0,0,	'TODO EL EQUIPO'								,'CONSIDERACIONES PREVENTIVAS DEL PRODUCTO O DEL PROCESO.'
-EXECUTE [dbo].[PG_CI_APQP_MODEL_ACTIVITY_LIST]  0, 139,	1,0,0,0,	'OMAR D.'										,'OBJETIVOS DE CALIDAD'
-EXECUTE [dbo].[PG_CI_APQP_MODEL_ACTIVITY_LIST]  0, 139,	1,0,0,0,	'TODO EL EQUIPO'								,'CONSIDERACIONES DE INFRAESTRUCUTRAS Y MEDIO AMBIENTE DE TRABAJO'
-EXECUTE [dbo].[PG_CI_APQP_MODEL_ACTIVITY_LIST]  0, 139,	1,0,0,0,	'TODO EL EQUIPO'								,'CONSIDERACIONES DE SEGURIDAD'
-EXECUTE [dbo].[PG_CI_APQP_MODEL_ACTIVITY_LIST]  0, 139,	1,0,0,0,	'GERENCIA GENERAL'								,'OBJETIVO DE PRODUCTIVIDAD '
-EXECUTE [dbo].[PG_CI_APQP_MODEL_ACTIVITY_LIST]  0, 139,	1,0,0,0,	'OMAR DECENA'									,'LECCIONES APRENDIDAS DE PROCESOS/PRODUCTOS SIMILARES'
+EXECUTE [dbo].[PG_CI_APQP_MODEL_ACTIVITY_LIST]  0, 139,	1,'1',		'Omar D.'						,'Fecha de aviso del cambio o inicio.'																																													
+EXECUTE [dbo].[PG_CI_APQP_MODEL_ACTIVITY_LIST]  0, 139,	1,'2',		'Omar D.'						,'Inicio del programa o cambio (implementacion).'
+EXECUTE [dbo].[PG_CI_APQP_MODEL_ACTIVITY_LIST]  0, 139,	1,'3',		'Omar D.'						,'Cotización.'
+EXECUTE [dbo].[PG_CI_APQP_MODEL_ACTIVITY_LIST]  0, 139,	1,'4',		'Equipo Gerencial'				,'Capacidad y factibilidad de corte (evaluación de requerimientos de volumen y de entrega).'
+EXECUTE [dbo].[PG_CI_APQP_MODEL_ACTIVITY_LIST]  0, 139,	1,'5',		'Omar D.'						,'Dibujos, planos o mylars o especificaciones de ingeniería nuevas (ver actividad #22).'
+EXECUTE [dbo].[PG_CI_APQP_MODEL_ACTIVITY_LIST]  0, 139,	1,'6',		'Omar D.'						,'Cotización de herramental de corte.'
+EXECUTE [dbo].[PG_CI_APQP_MODEL_ACTIVITY_LIST]  0, 139,	1,'6.1',	'Omar D.'						,'PO de herramental.'
+EXECUTE [DBO].[PG_CI_APQP_MODEL_ACTIVITY_LIST]  0, 139,	1,'6.2',	'Omar D.'						,'Herramental recibido / listo para producción.'
+EXECUTE [dbo].[PG_CI_APQP_MODEL_ACTIVITY_LIST]  0, 139,	1,'7',		'Omar D'						,'Disponibilidad de materia prima, cantidades y colores.'
+EXECUTE [dbo].[PG_CI_APQP_MODEL_ACTIVITY_LIST]  0, 139,	1,'8',		'Guillermo M, Jorge H.'			,'Requerimientos de mano de obra adicional.'
+EXECUTE [dbo].[PG_CI_APQP_MODEL_ACTIVITY_LIST]  0, 139,	1,'9',		'Guillermo M, Jorge H.'			,'Necesides de equipo adicional o de mejoras al ya existente.'
+EXECUTE [dbo].[PG_CI_APQP_MODEL_ACTIVITY_LIST]  0, 139,	1,'10',		'Equipo Gerencial'				,'Necesidades de entrenamiento adicionales.'
+EXECUTE [DBO].[PG_CI_APQP_MODEL_ACTIVITY_LIST]  0, 139,	1,'11',		'Miguel C.'						,'Documentación de calidad, control plan, FMEA´S, diagrama de flujo, etc.'
+EXECUTE [DBO].[PG_CI_APQP_MODEL_ACTIVITY_LIST]  0, 139,	1,'11.1',	'Miguel C.'						,'Envío de PPAP.'
+EXECUTE [DBO].[PG_CI_APQP_MODEL_ACTIVITY_LIST]  0, 139,	1,'11.2',	'Miguel C.'						,'PPAP aprobado por el cliente.'
+EXECUTE [dbo].[PG_CI_APQP_MODEL_ACTIVITY_LIST]  0, 139,	1,'12',		'Miguel C.'						,'Equipo de inspección adicional, disponibilidad de criterios de calidad, masters, ayudas visuales, etc.'
+EXECUTE [dbo].[PG_CI_APQP_MODEL_ACTIVITY_LIST]  0, 139,	1,'13',		'Miguel C.'						,'Documentación de piso, instrucciones de trabajo y criterios.'
+EXECUTE [dbo].[PG_CI_APQP_MODEL_ACTIVITY_LIST]  0, 139,	1,'14',		'Omar D.'						,'Requerimientos de monitoreo, inspección y medición del producto o del proceso.'
+EXECUTE [dbo].[PG_CI_APQP_MODEL_ACTIVITY_LIST]  0, 139,	1,'15',		'Omar D.'						,'Especificaciones adicionales o especiales de ingenieria, esto incluye caracteristicas criticas y/o de segutidad del producto (considerando la flamabilidad como caracteristica crítica).'
+EXECUTE [dbo].[PG_CI_APQP_MODEL_ACTIVITY_LIST]  0, 139,	1,'15-A',	'Miguel C.'						,'Especificaciones especiales del cliente (manual de proveedores).'
+EXECUTE [DBO].[PG_CI_APQP_MODEL_ACTIVITY_LIST]  0, 139,	1,'16',		'Omar D.'						,'Requerir lista de paises destino.'
+EXECUTE [dbo].[PG_CI_APQP_MODEL_ACTIVITY_LIST]  0, 139,	1,'17',		'Omar D.'						,'Archivos de corte.'
+EXECUTE [dbo].[PG_CI_APQP_MODEL_ACTIVITY_LIST]  0, 139,	1,'18',		'Omar D.'						,'Muestras.'
+--EXECUTE [dbo].[PG_CI_APQP_MODEL_ACTIVITY_LIST]  0, 139,	1,'',	'Miguel C, Omar D.'				,'validaciones de acciones/muestras en areas modelo antes de implementar masivamente'		--20210409
+EXECUTE [dbo].[PG_CI_APQP_MODEL_ACTIVITY_LIST]  0, 139,	1,'19',		'Miguel C.'						,'Masters de color, manual de marcas naturales y/o cualquier otro criterio de calidad que se requiera.'
+EXECUTE [dbo].[PG_CI_APQP_MODEL_ACTIVITY_LIST]  0, 139,	1,'20',		'Omar D.'						,'Blanket PO.'
+EXECUTE [DBO].[PG_CI_APQP_MODEL_ACTIVITY_LIST]  0, 139,	1,'21',		'Omar D.'						,'Número de parte en el sistema.'
+EXECUTE [dbo].[PG_CI_APQP_MODEL_ACTIVITY_LIST]  0, 139,	1,'22',		'Omar D.'						,'Información de empaque y etiquetas.'
+EXECUTE [DBO].[PG_CI_APQP_MODEL_ACTIVITY_LIST]  0, 139,	1,'23',		'Omar D.'						,'Inicio de corte produccion normal.'
+EXECUTE [dbo].[PG_CI_APQP_MODEL_ACTIVITY_LIST]  0, 139,	1,'24',		'MANUEL G.'						,'Inventarios (obsolescencias).'
+EXECUTE [dbo].[PG_CI_APQP_MODEL_ACTIVITY_LIST]  0, 139,	1,'25',		'Omar D.'						,'Recordatorio de requerimiento de confidencialidad de IATF 16949.'
+EXECUTE [dbo].[PG_CI_APQP_MODEL_ACTIVITY_LIST]  0, 139,	1,'26',		'Omar D.'						,'Consideraciones preventivas del producto o del proceso.'
+EXECUTE [dbo].[PG_CI_APQP_MODEL_ACTIVITY_LIST]  0, 139,	1,'27',		'Miguel C.'						,'Objetivos de calidad.'
+EXECUTE [dbo].[PG_CI_APQP_MODEL_ACTIVITY_LIST]  0, 139,	1,'28',		'Equipo Gerencial'				,'Consideraciones de infraestructuras y medio ambiente de trabajo.'
+EXECUTE [dbo].[PG_CI_APQP_MODEL_ACTIVITY_LIST]  0, 139,	1,'29',		'Equipo Gerencial'				,'Consideraciones de seguridad.'
+EXECUTE [dbo].[PG_CI_APQP_MODEL_ACTIVITY_LIST]  0, 139,	1,'30',		'Gerencia General'				,'Objetivo de productividad.'
+EXECUTE [dbo].[PG_CI_APQP_MODEL_ACTIVITY_LIST]  0, 139,	1,'31',		'Omar D.'						,'Lecciones aprendidas de procesos/productos similares.'
+
 SET NOCOUNT OFF
 GO
 
@@ -310,7 +328,11 @@ CREATE TABLE [dbo].[APQP_MODEL_DET]	(
 			-- ===========================
 			[K_STATUS_APQP_MODEL]				[INT] NOT NULL DEFAULT 1,
 			-- ===========================
-			[L_APQP_MODEL_DET_COMPLETED]		[INT] NOT NULL DEFAULT 0
+			[L_APQP_MODEL_DET_COMPLETED]		[INT] NOT NULL DEFAULT 0,
+			-- ===========================
+			[C_APQP_MODEL_DET]					[NVARCHAR](MAX) NOT NULL DEFAULT '',		--ES EL CAMPO DE COMENTARIOS.
+			-- ===========================
+			[COMPLEMENT_APQP_MODEL]				[NVARCHAR](MAX) NOT NULL DEFAULT ''
 ) ON [PRIMARY]
 GO
 ALTER TABLE [dbo].[APQP_MODEL_DET]
@@ -330,8 +352,10 @@ ALTER TABLE [dbo].[APQP_MODEL_DET]
 		PRIMARY KEY CLUSTERED ([K_APQP_MODEL_DET])
 GO
 
-
-
+--ALTER TABLE [dbo].[APQP_MODEL_DET]											
+--ADD
+--		[C_APQP_MODEL_DET_COMPLETED]		[NVARCHAR](MAX) NOT NULL DEFAULT ''
+--GO
 -- //////////////////////////////////////////////////////
 -- //////////////////////////////////////////////////////
 -- //////////////////////////////////////////////////////

@@ -11,9 +11,13 @@
 GO
 
 -- //////////////////////////////////////////////////////////////
+--	EN LA TABLA EL CAMPO SE LLAMA CUSTOMER_TYPE_CD, PERO NO SE HA 
+--	CAMBIADO DEBIDO A REFERENCIA QUE TIENE EN OTRAS VENTANAS
+--	Y OBTIENE INFORMACIÓN DE ESTE CAMPO EN TIPO VARCHAR Y NO CON ID.
+--	MIENTRAS NO SE ELIMINEN LAS REFERENCIAS NO SERÁ POSIBLE INCLUIR 
+--	ESTA TABLA.
 
-
-
+--		SELECT * FROM	[CUSTOMER_TYPE]
 -- //////////////////////////////////////////////////////////////
 -- // DROPs
 -- //////////////////////////////////////////////////////////////

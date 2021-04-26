@@ -7,7 +7,7 @@
 -- // CREATION DATE:	20210119
 -- ////////////////////////////////////////////////////////////// 
 
-USE [DATA_02Pruebas]
+USE [DATA_02]
 GO
 
 -- //////////////////////////////////////////////////////////////
@@ -25,7 +25,7 @@ CREATE PROCEDURE [dbo].[PG_LI_APQP_MODEL_HDR]
 	-- ===========================
 	@PP_BUSCAR						VARCHAR(200)
 AS
-	DECLARE @VP_MENSAJE				VARCHAR(300) = ''
+	DECLARE @VP_MENSAJE				NVARCHAR(MAX) = ''
 	-- ///////////////////////////////////////////
 	-- =========================================	-- =========================================
 	SELECT		TOP (5000)
@@ -58,13 +58,14 @@ CREATE PROCEDURE [dbo].[PG_LI_APQP_MODEL_DET]
 	-- ===========================
 	@PP_K_APQP_MODEL_HDR			VARCHAR(200)
 AS
-	DECLARE @VP_MENSAJE				VARCHAR(300) = ''
+	DECLARE @VP_MENSAJE				NVARCHAR(MAX) = ''
 	-- ///////////////////////////////////////////
 	-- =========================================	-- =========================================
 	SELECT		TOP(500)
 				D_APQP_MODEL_ACTIVITY_LIST,
 				RESPONSIBLE_APQP_MODEL_ACTIVITY_LIST,
 				S_STATUS_APQP_MODEL,
+				N_APQP_MODEL_TYPE_01,
 				APQP_MODEL_DET.*
 				-- =============================	
 	FROM		APQP_MODEL_DET
@@ -95,18 +96,18 @@ CREATE PROCEDURE [dbo].[PG_SK_APQP_MODEL_HDR]
 AS
 	-- ///////////////////////////////////////////
 	SELECT		TOP (1)
-				(	LTRIM(RTRIM(	LTRIM(RTRIM(	LTRIM(RTRIM(	LTRIM(RTRIM( S_ARCUSFIL_PROGRAM_OPTION + ' ' + D_ARCUSFIL_PROGRAM_OPTION ) + ' ' )+ 
-								ARCUSFIL_PROGRAM_OPTION_MODEL	)	+ ' ' ) + 
-										ARCUSFIL_PROGRAM_OPTION_YEAR	)	+ ' ' ) + 
-											ARCUSFIL_PROGRAM_OPTION_MAKER)	)
-				)	AS [OPTION],
+				--(	LTRIM(RTRIM(	LTRIM(RTRIM(	LTRIM(RTRIM(	LTRIM(RTRIM( S_ARCUSFIL_PROGRAM_OPTION + ' ' + D_ARCUSFIL_PROGRAM_OPTION ) + ' ' )+ 
+				--				ARCUSFIL_PROGRAM_OPTION_MODEL	)	+ ' ' ) + 
+				--						ARCUSFIL_PROGRAM_OPTION_YEAR	)	+ ' ' ) + 
+				--							ARCUSFIL_PROGRAM_OPTION_MAKER)	)
+				--)	AS [OPTION],
 
 				CONVERT(varchar(110),F_APQP_MODEL_HDR_CREATED,107)	AS [F_DATE_MODEL],
 
 				CUS_NAME,	--	D_
 				CUS_NO,		--	S_
-				S_ARCUSFIL_PROGRAM_OPTION,	--	OPTION PRINCIPAL
-				D_ARCUSFIL_PROGRAM_OPTION,	--	SUBOPCION
+				--S_ARCUSFIL_PROGRAM_OPTION,	--	OPTION PRINCIPAL
+				--D_ARCUSFIL_PROGRAM_OPTION,	--	SUBOPCION
 				S_ARCUSFIL_PROGRAM,
 				D_STATUS_APQP_MODEL, D_APQP_MODEL_HDR_TYPE,
 				S_STATUS_APQP_MODEL, S_APQP_MODEL_HDR_TYPE,
@@ -117,7 +118,7 @@ AS
 	INNER JOIN	STATUS_APQP_MODEL			ON	STATUS_APQP_MODEL.K_STATUS_APQP_MODEL		= APQP_MODEL_HDR.K_STATUS_APQP_MODEL
 	INNER JOIN	APQP_MODEL_HDR_TYPE			ON	APQP_MODEL_HDR_TYPE.K_APQP_MODEL_HDR_TYPE	= APQP_MODEL_HDR.K_APQP_MODEL_HDR_TYPE
 	INNER JOIN	ARCUSFIL_PROGRAM			ON	ARCUSFIL_PROGRAM.K_ARCUSFIL_PROGRAM			= APQP_MODEL_HDR.K_ARCUSFIL_PROGRAM
-	INNER JOIN	ARCUSFIL_PROGRAM_OPTION		ON	ARCUSFIL_PROGRAM.K_ARCUSFIL_PROGRAM			= ARCUSFIL_PROGRAM_OPTION.K_ARCUSFIL_PROGRAM_OPTION
+	--INNER JOIN	ARCUSFIL_PROGRAM_OPTION		ON	ARCUSFIL_PROGRAM.K_ARCUSFIL_PROGRAM			= ARCUSFIL_PROGRAM_OPTION.K_ARCUSFIL_PROGRAM_OPTION
 	INNER JOIN	ARCUSFIL_SQL				ON	ARCUSFIL_SQL.A4GLIdentity					= APQP_MODEL_HDR.K_ARCUSFIL
 				-- =============================
 	WHERE		APQP_MODEL_HDR.K_APQP_MODEL_HDR=@PP_K_APQP_MODEL_HDR
@@ -152,7 +153,7 @@ CREATE PROCEDURE [dbo].[PG_IN_APQP_MODEL_HDR]
 	-- ============================
 	@PP_APQP_ECN_RFQ_SP_REFERENCE		VARCHAR(255)
 AS
-	DECLARE @VP_MENSAJE				VARCHAR(300) = ''
+	DECLARE @VP_MENSAJE				NVARCHAR(MAX) = ''
 			,@VP_K_APQP_MODEL_HDR			INT = 0
 BEGIN TRANSACTION 
 BEGIN TRY
@@ -216,20 +217,11 @@ BEGIN TRY
 											@PP_F_APQP_MODEL_HDR_CREATED
 
 	--========================================================================================
-	--		SE INSERTA EL VALOR POR DEFAULT PARA LAS DOS PRIMERAS ACTIVIDADES.
-	
-	UPDATE	APQP_MODEL_DET
-	SET		[F_APQP_MODEL_DET_COMPLETED]	= GETDATE(),
-			[K_STATUS_APQP_MODEL]			= 11
-	WHERE	[K_APQP_MODEL_HDR]				= @VP_K_APQP_MODEL_HDR
-	AND		[K_APQP_MODEL_ACTIVITY_LIST]	IN (1,2)
-	
-	IF @@ROWCOUNT = 0
-	BEGIN
-		SET @VP_MENSAJE='The record was not updated. Activities (1 & 2)'
-		RAISERROR (@VP_MENSAJE, 16, 1 )
-	END
-		
+	--		SE INSERTA EL VALOR POR DEFAULT PARA LAS DOS PRIMERAS ACTIVIDADES.	
+	EXECUTE	[dbo].[PG_UP_APQP_MODEL_DET_DEFAULT]	@PP_K_SISTEMA_EXE	,@PP_K_USUARIO_ACCION,
+													-- ===========================
+													@VP_K_APQP_MODEL_HDR
+																
 	--========================================================================================
 	--========================================================================================
 	--	A PARTIR DE AQUÍ SE INSERTARAN LOS REGISTROS PARA CADA UNO DE LOS DOCUMENTOS DEL MODELO
@@ -304,46 +296,52 @@ CREATE PROCEDURE [dbo].[PG_IN_APQP_MODEL_DET]
 	@PP_K_APQP_MODEL_HDR_TYPE			INT,
 	@PP_F_APQP_MODEL_HDR_CREATED		DATE
 AS
-	DECLARE @VP_MENSAJE								VARCHAR(300) = ''
+	DECLARE @VP_MENSAJE								NVARCHAR(MAX) = ''
 			,@VP_K_APQP_MODEL_ACTIVITY_LIST			INT = 0
 ---===================================================================================================================================================
 	--	PARA LA CREACIÓN DE LA CONSULTA DINAMICA	
 	--	ES POR EL TIPO DE VERSION, CUANDO ES NUEVO MODELO SE UTILIZA EL 10, PARA SELECCIONAR LAS ACTIVIDADES QUE SON DE ESE TIPO.
 	--	CUANDO ES UN CAMBIO ESPECIFICO SE PODRÁ UTILIZAR OTRO TIPO SOLO ES CUESTION DE DEFINIR EN LAS ACTIVIDADES CUALES SE INSERTARAN DE ACUERDO A ESE TIPO DE CAMBIO.
-	DECLARE	@TA_RESULTADOS_SELECT	AS TABLE
-		(	TA_K_APQP_MODEL_ACTIVITY_LIST	INT		)
+	
+	-- SE HABILITA CUANDO EXITA MAS TIPOS.
+		
+		--DECLARE	@TA_RESULTADOS_SELECT	AS TABLE
+		--(	TA_K_APQP_MODEL_ACTIVITY_LIST	INT		)
 
-	DECLARE @VP_STR_SQL					NVARCHAR(MAX)
-
-		SET @VP_STR_SQL = ' SELECT '
-						+	' K_APQP_MODEL_ACTIVITY_LIST'
-						+	' FROM	APQP_MODEL_ACTIVITY_LIST'
-					
-		IF @PP_K_APQP_MODEL_HDR_TYPE	= 10
-		BEGIN
-			SET @VP_STR_SQL =	@VP_STR_SQL +	'	WHERE	L_APQP_MODEL_TYPE_01	= 1'
-		END
-		ELSE IF @PP_K_APQP_MODEL_HDR_TYPE	= 20
-		BEGIN
-			SET @VP_STR_SQL =	@VP_STR_SQL +	'	WHERE	L_APQP_MODEL_TYPE_02	= 1'
-		END
-		ELSE IF @PP_K_APQP_MODEL_HDR_TYPE	= 30
-		BEGIN
-			SET @VP_STR_SQL =	@VP_STR_SQL +	'	WHERE	L_APQP_MODEL_TYPE_03	= 1'
-		END
-		ELSE IF @PP_K_APQP_MODEL_HDR_TYPE	= 40
-		BEGIN
-			SET @VP_STR_SQL =	@VP_STR_SQL +	'	WHERE	L_APQP_MODEL_TYPE_04	= 1'
-		END
+		--DECLARE @VP_STR_SQL					NVARCHAR(MAX)
+		--
+		--SET @VP_STR_SQL = ' SELECT '
+		--				+	' K_APQP_MODEL_ACTIVITY_LIST'
+		--				+	' FROM	APQP_MODEL_ACTIVITY_LIST'
+		--			
+		--IF @PP_K_APQP_MODEL_HDR_TYPE	= 10
+		--BEGIN
+		--	SET @VP_STR_SQL =	@VP_STR_SQL +	'	WHERE	L_APQP_MODEL_TYPE_01	= 1'
+		--END
+		--ELSE IF @PP_K_APQP_MODEL_HDR_TYPE	= 20
+		--BEGIN
+		--	SET @VP_STR_SQL =	@VP_STR_SQL +	'	WHERE	L_APQP_MODEL_TYPE_02	= 1'
+		--END
+		--ELSE IF @PP_K_APQP_MODEL_HDR_TYPE	= 30
+		--BEGIN
+		--	SET @VP_STR_SQL =	@VP_STR_SQL +	'	WHERE	L_APQP_MODEL_TYPE_03	= 1'
+		--END
+		--ELSE IF @PP_K_APQP_MODEL_HDR_TYPE	= 40
+		--BEGIN
+		--	SET @VP_STR_SQL =	@VP_STR_SQL +	'	WHERE	L_APQP_MODEL_TYPE_04	= 1'
+		--END
 		-- ==========================================	
-		INSERT INTO @TA_RESULTADOS_SELECT
-		EXECUTE sp_executesql @VP_STR_SQL
+		--INSERT INTO @TA_RESULTADOS_SELECT
+		--EXECUTE sp_executesql @VP_STR_SQL
 ---===================================================================================================================================================
 ---===================================================================================================================================================
 ---===================================================================================================================================================	
-	DECLARE @VP_CU_K_ACTIVITY_LIST INT
+	DECLARE		 @VP_CU_K_ACTIVITY_LIST		INT
+
 	DECLARE CU_LISTA_ACTIVIDADES CURSOR FOR  
-		SELECT	*	FROM @TA_RESULTADOS_SELECT
+		--SELECT	*	FROM @TA_RESULTADOS_SELECT
+		SELECT	K_APQP_MODEL_ACTIVITY_LIST
+		FROM	APQP_MODEL_ACTIVITY_LIST
 	OPEN			CU_LISTA_ACTIVIDADES;  
 	FETCH NEXT FROM CU_LISTA_ACTIVIDADES INTO @VP_CU_K_ACTIVITY_LIST;
 	WHILE @@FETCH_STATUS = 0  
@@ -395,6 +393,115 @@ GO
 
 
 -- //////////////////////////////////////////////////////////////
+-- // STORED PROCEDURE ---> INSERT
+-- //////////////////////////////////////////////////////////////
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[PG_UP_APQP_MODEL_DET_DEFAULT]') AND type in (N'P', N'PC'))
+	DROP PROCEDURE [dbo].[PG_UP_APQP_MODEL_DET_DEFAULT]
+GO
+--		 EXECUTE [dbo].[PG_UP_APQP_MODEL_DET_DEFAULT] 0,139,
+CREATE PROCEDURE [dbo].[PG_UP_APQP_MODEL_DET_DEFAULT]
+	@PP_K_SISTEMA_EXE					INT,
+	@PP_K_USUARIO_ACCION				INT,
+	-- ===========================
+	@PP_K_APQP_MODEL_HDR				INT
+AS
+	DECLARE @VP_MENSAJE					NVARCHAR(MAX) = ''
+	-- ===========================
+	--	PRIMERO SE ACTUALIZAN LAS DOS PRIMERAS ACTIVIDADES DE MANERA AUTOMATICA.
+	UPDATE	APQP_MODEL_DET
+	SET		[F_APQP_MODEL_DET_COMPLETED]	= GETDATE()
+	WHERE	[K_APQP_MODEL_HDR]				= @PP_K_APQP_MODEL_HDR
+	AND		[K_APQP_MODEL_ACTIVITY_LIST]	IN (1,2)
+	
+	IF @@ROWCOUNT = 0
+	BEGIN
+		RAISERROR ('The record was not updated. Activities (1 & 2)', 16, 1 )
+	END
+	-- ============================================================================================================
+	-- ============================================================================================================
+	--	SE ACTUALIZAN LAS ACTIVIDADES QUE SON PREDEFINIDAS DE MANERA AUTOMATICA, ESTAS SIEMPRE SE LLENAN POR DEFAULT.
+	UPDATE	APQP_MODEL_DET
+	SET		[F_APQP_MODEL_DET_COMPLETED]	= GETDATE(),
+			[C_APQP_MODEL_DET]				= 'Se recuerda a los participantes del equipo que toda la informacion se debe manejar dentro de Pearl Leather México y que no se debe distribuir a personas no autorizadas o no involucradas.'
+	WHERE	[K_APQP_MODEL_HDR]				= @PP_K_APQP_MODEL_HDR
+	AND		[K_APQP_MODEL_ACTIVITY_LIST]	= 30	
+	IF @@ROWCOUNT = 0
+	BEGIN
+		RAISERROR ('The record was not updated. Activity (25)', 16, 1 )
+	END
+	------------------------------------------------------------------------------------------------------------------
+	UPDATE	APQP_MODEL_DET
+	SET		[F_APQP_MODEL_DET_COMPLETED]	= GETDATE(),
+			[C_APQP_MODEL_DET]				= 'Se analizan las posibles fallas del proceso o del producto y se determinan cambios para mejorar el nivel de calidad.'
+	WHERE	[K_APQP_MODEL_HDR]				= @PP_K_APQP_MODEL_HDR
+	AND		[K_APQP_MODEL_ACTIVITY_LIST]	= 31	
+	IF @@ROWCOUNT = 0
+	BEGIN
+		RAISERROR ('The record was not updated. Activity (26)', 16, 1 )
+	END
+	------------------------------------------------------------------------------------------------------------------
+	UPDATE	APQP_MODEL_DET
+	SET		[F_APQP_MODEL_DET_COMPLETED]	= GETDATE(),
+			[C_APQP_MODEL_DET]				= 'TBC'
+	WHERE	[K_APQP_MODEL_HDR]				= @PP_K_APQP_MODEL_HDR
+	AND		[K_APQP_MODEL_ACTIVITY_LIST]	= 32	
+	IF @@ROWCOUNT = 0
+	BEGIN
+		RAISERROR ('The record was not updated. Activity (27)', 16, 1 )
+	END
+	------------------------------------------------------------------------------------------------------------------
+	UPDATE	APQP_MODEL_DET
+	SET		[F_APQP_MODEL_DET_COMPLETED]	= GETDATE(),
+			[C_APQP_MODEL_DET]				= 'Se analizan las condiciones de infraestructura actuales. Equipo disponible, disponibilidad de área o espacio productivo, etc. Y se determina si hay necesidad de hacer cambios o modificaciones.'
+	WHERE	[K_APQP_MODEL_HDR]				= @PP_K_APQP_MODEL_HDR
+	AND		[K_APQP_MODEL_ACTIVITY_LIST]	= 33	
+	IF @@ROWCOUNT = 0
+	BEGIN
+		RAISERROR ('The record was not updated. Activity (28)', 16, 1 )
+	END
+	------------------------------------------------------------------------------------------------------------------
+	UPDATE	APQP_MODEL_DET
+	SET		[F_APQP_MODEL_DET_COMPLETED]	= GETDATE(),
+			[C_APQP_MODEL_DET]				= 'Se evalúa si el nuevo producto o cambio de ingeniería tiene implicaciones o consecuencias que afecten la seguridad del personal de la planta.'
+	WHERE	[K_APQP_MODEL_HDR]				= @PP_K_APQP_MODEL_HDR
+	AND		[K_APQP_MODEL_ACTIVITY_LIST]	= 34	
+	IF @@ROWCOUNT = 0
+	BEGIN
+		RAISERROR ('The record was not updated. Activity (29)', 16, 1 )
+	END
+	------------------------------------------------------------------------------------------------------------------
+	UPDATE	APQP_MODEL_DET
+	SET		[F_APQP_MODEL_DET_COMPLETED]	= GETDATE(),
+			[C_APQP_MODEL_DET]				= 'Se determina el objetivo de eficiencia en el corte del programa en específico. Esta información es confidencial y no está sujeta a auditoría.'
+	WHERE	[K_APQP_MODEL_HDR]				= @PP_K_APQP_MODEL_HDR
+	AND		[K_APQP_MODEL_ACTIVITY_LIST]	= 35	
+	IF @@ROWCOUNT = 0
+	BEGIN
+		RAISERROR ('The record was not updated. Activity (30)', 16, 1 )
+	END
+	------------------------------------------------------------------------------------------------------------------
+	UPDATE	APQP_MODEL_DET
+	SET		[F_APQP_MODEL_DET_COMPLETED]	= GETDATE(),
+			[C_APQP_MODEL_DET]				= 'Realización de nuevos APQP´s para un producto nuevo.'
+	WHERE	[K_APQP_MODEL_HDR]				= @PP_K_APQP_MODEL_HDR
+	AND		[K_APQP_MODEL_ACTIVITY_LIST]	= 36	
+	IF @@ROWCOUNT = 0
+	BEGIN
+		RAISERROR ('The record was not updated. Activity (31)', 16, 1 )
+	END
+	-- ============================================================================================================
+	-- ============================================================================================================
+	UPDATE	APQP_MODEL_DET
+	SET		[K_STATUS_APQP_MODEL]			= 11
+	WHERE	[K_APQP_MODEL_HDR]				= @PP_K_APQP_MODEL_HDR
+	AND		[K_APQP_MODEL_ACTIVITY_LIST]	IN (1,2,30,31,32,33,34,35,36)
+	IF @@ROWCOUNT = 0
+	BEGIN
+		RAISERROR ('The record was not updated. Activity (31)', 16, 1 )
+	END
+GO
+
+-- //////////////////////////////////////////////////////////////
 -- // STORED PROCEDURE ---> UPDATE / FICHA
 -- //////////////////////////////////////////////////////////////
 IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[PG_UP_APQP_MODEL_HDR]') AND type in (N'P', N'PC'))
@@ -420,7 +527,7 @@ CREATE PROCEDURE [dbo].[PG_UP_APQP_MODEL_HDR]
 	-- ============================
 	@PP_APQP_ECN_RFQ_SP_REFERENCE		VARCHAR(255)
 AS			
-DECLARE @VP_MENSAJE					VARCHAR(300) = ''
+DECLARE @VP_MENSAJE					NVARCHAR(MAX) = ''
 BEGIN TRANSACTION 
 BEGIN TRY
 	-- /////////////////////////////////////////////////////////////////////
@@ -506,7 +613,7 @@ CREATE PROCEDURE [dbo].[PG_UP_APQP_MODEL_DET]
 	@PP_K_APQP_MODEL_HDR				INT,
 	@PP_F_APQP_MODEL_HDR_CREATED		DATE
 AS
-	DECLARE @VP_MENSAJE				VARCHAR(300) = ''
+	DECLARE @VP_MENSAJE				NVARCHAR(MAX) = ''
 ---===================================================================================================================================================
 ---===================================================================================================================================================
 ---===================================================================================================================================================	
@@ -543,7 +650,7 @@ CREATE PROCEDURE [dbo].[PG_DL_APQP_MODEL_HDR]
 	-- ===========================
 	@PP_K_APQP_MODEL_HDR						INT
 AS
-DECLARE @VP_MENSAJE				VARCHAR(300) = ''
+DECLARE @VP_MENSAJE				NVARCHAR(MAX) = ''
 BEGIN TRANSACTION 
 BEGIN TRY
 	--/////////////////////////////////////////////////////////////

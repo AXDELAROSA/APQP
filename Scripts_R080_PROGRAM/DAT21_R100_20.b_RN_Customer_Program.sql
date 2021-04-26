@@ -20,7 +20,8 @@ CREATE PROCEDURE [dbo].[PG_RN_ARCUSFIL_PROGRAM_UNIQUE]
 	@PP_K_SISTEMA_EXE					[INT],
 	@PP_K_USUARIO_ACCION				[INT],
 	-- ===========================		
-	@PP_K_ARCUSFIL_PROGRAM				[INT],	
+	@PP_K_ARCUSFIL						[INT],
+	@PP_K_ARCUSFIL_PROGRAM				[INT],
 	@PP_S_ARCUSFIL_PROGRAM				[VARCHAR] (20),
 	-- ===========================		
 	@OU_RESULTADO_VALIDACION			[VARCHAR] (200)		OUTPUT
@@ -31,7 +32,8 @@ AS
 
 	SELECT	@VP_N_ARCUSFIL_PROGRAM_X_D_ARCUSFIL_PROGRAM		 =		COUNT	(ARCUSFIL_PROGRAM.K_ARCUSFIL_PROGRAM)
 	FROM	ARCUSFIL_PROGRAM
-	WHERE	ARCUSFIL_PROGRAM.K_ARCUSFIL_PROGRAM<>@PP_K_ARCUSFIL_PROGRAM
+	WHERE	K_ARCUSFIL		= @PP_K_ARCUSFIL
+	AND		ARCUSFIL_PROGRAM.K_ARCUSFIL_PROGRAM<>@PP_K_ARCUSFIL_PROGRAM
 	AND		ARCUSFIL_PROGRAM.S_ARCUSFIL_PROGRAM=@PP_S_ARCUSFIL_PROGRAM
 
 	IF @VP_N_ARCUSFIL_PROGRAM_X_D_ARCUSFIL_PROGRAM>0
@@ -115,37 +117,37 @@ AS
 GO
 
 
--- //////////////////////////////////////////////////////////////
--- // STORED PROCEDURE ---> RN_CLAVE_EXISTE
--- //////////////////////////////////////////////////////////////
-IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[PG_RN_ARCUSFIL_PROGRAM_CLAVE_EXISTE]') AND type in (N'P', N'PC'))
-	DROP PROCEDURE [dbo].[PG_RN_ARCUSFIL_PROGRAM_CLAVE_EXISTE]
-GO
+---- //////////////////////////////////////////////////////////////
+---- // STORED PROCEDURE ---> RN_CLAVE_EXISTE
+---- //////////////////////////////////////////////////////////////
+--IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[PG_RN_ARCUSFIL_PROGRAM_CLAVE_EXISTE]') AND type in (N'P', N'PC'))
+--	DROP PROCEDURE [dbo].[PG_RN_ARCUSFIL_PROGRAM_CLAVE_EXISTE]
+--GO
 
-CREATE PROCEDURE [dbo].[PG_RN_ARCUSFIL_PROGRAM_CLAVE_EXISTE]
-	@PP_K_SISTEMA_EXE			INT,
-	@PP_K_USUARIO_ACCION		INT,
-	-- ===========================		
-	@PP_K_ARCUSFIL_PROGRAM		INT,
-	-- ===========================		
-	@OU_RESULTADO_VALIDACION	VARCHAR(300)	OUTPUT
-AS
-	DECLARE @VP_RESULTADO		VARCHAR(300) = ''		
-	-- ///////////////////////////////////////////
-	IF @VP_RESULTADO='' 
-		BEGIN
-		DECLARE @VP_EXISTE_CLAVE	INT
+--CREATE PROCEDURE [dbo].[PG_RN_ARCUSFIL_PROGRAM_CLAVE_EXISTE]
+--	@PP_K_SISTEMA_EXE			INT,
+--	@PP_K_USUARIO_ACCION		INT,
+--	-- ===========================		
+--	@PP_K_ARCUSFIL_PROGRAM		INT,
+--	-- ===========================		
+--	@OU_RESULTADO_VALIDACION	VARCHAR(300)	OUTPUT
+--AS
+--	DECLARE @VP_RESULTADO		VARCHAR(300) = ''		
+--	-- ///////////////////////////////////////////
+--	IF @VP_RESULTADO='' 
+--		BEGIN
+--		DECLARE @VP_EXISTE_CLAVE	INT
 
-		SELECT	@VP_EXISTE_CLAVE	=	COUNT(K_ARCUSFIL_PROGRAM)
-		FROM	ARCUSFIL_PROGRAM 
-		WHERE	K_ARCUSFIL_PROGRAM	=	@PP_K_ARCUSFIL_PROGRAM
-		IF @VP_EXISTE_CLAVE>0
-			SET @VP_RESULTADO =  '[ARCUSFIL_PROGRAM] ID not available.'
-		END			
-	-- ///////////////////////////////////////////		
-	SET @OU_RESULTADO_VALIDACION = @VP_RESULTADO
-	-- /////////////////////////////////////////////////////
-GO
+--		SELECT	@VP_EXISTE_CLAVE	=	COUNT(K_ARCUSFIL_PROGRAM)
+--		FROM	ARCUSFIL_PROGRAM 
+--		WHERE	K_ARCUSFIL_PROGRAM	=	@PP_K_ARCUSFIL_PROGRAM
+--		IF @VP_EXISTE_CLAVE>0
+--			SET @VP_RESULTADO =  '[ARCUSFIL_PROGRAM] ID not available.'
+--		END			
+--	-- ///////////////////////////////////////////		
+--	SET @OU_RESULTADO_VALIDACION = @VP_RESULTADO
+--	-- /////////////////////////////////////////////////////
+--GO
 
 
 -- //////////////////////////////////////////////////////////////
@@ -182,33 +184,33 @@ AS
 GO
 
 
--- //////////////////////////////////////////////////////////////
--- // STORED PROCEDURE ---> RN_INSERT
--- //////////////////////////////////////////////////////////////
-IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[PG_RN_ARCUSFIL_PROGRAM_INSERT]') AND type in (N'P', N'PC'))
-	DROP PROCEDURE [dbo].[PG_RN_ARCUSFIL_PROGRAM_INSERT]
-GO
-CREATE PROCEDURE [dbo].[PG_RN_ARCUSFIL_PROGRAM_INSERT]
-	@PP_K_SISTEMA_EXE					[INT],
-	@PP_K_USUARIO_ACCION				[INT],
-	-- ===========================		
-	@PP_K_ARCUSFIL_PROGRAM				[INT],	
-	-- ===========================		
-	@OU_RESULTADO_VALIDACION			[VARCHAR] (200)		OUTPUT
-AS
-	DECLARE @VP_RESULTADO				VARCHAR(300) = ''		
-	-- ///////////////////////////////////////////
-	IF @VP_RESULTADO=''
-		EXECUTE [dbo].[PG_RN_ARCUSFIL_PROGRAM_CLAVE_EXISTE]	@PP_K_SISTEMA_EXE, @PP_K_USUARIO_ACCION,
-															@PP_K_ARCUSFIL_PROGRAM,	 
-															@OU_RESULTADO_VALIDACION = @VP_RESULTADO		OUTPUT
-	-- ///////////////////////////////////////////	
-	IF	@VP_RESULTADO<>''
-		SET	@VP_RESULTADO = @VP_RESULTADO + ' //INS//'	
-	-- ///////////////////////////////////////////		
-	SET @OU_RESULTADO_VALIDACION = @VP_RESULTADO
-	-- /////////////////////////////////////////////////////
-GO
+---- //////////////////////////////////////////////////////////////
+---- // STORED PROCEDURE ---> RN_INSERT
+---- //////////////////////////////////////////////////////////////
+--IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[PG_RN_ARCUSFIL_PROGRAM_INSERT]') AND type in (N'P', N'PC'))
+--	DROP PROCEDURE [dbo].[PG_RN_ARCUSFIL_PROGRAM_INSERT]
+--GO
+--CREATE PROCEDURE [dbo].[PG_RN_ARCUSFIL_PROGRAM_INSERT]
+--	@PP_K_SISTEMA_EXE					[INT],
+--	@PP_K_USUARIO_ACCION				[INT],
+--	-- ===========================		
+--	@PP_K_ARCUSFIL_PROGRAM				[INT],	
+--	-- ===========================		
+--	@OU_RESULTADO_VALIDACION			[VARCHAR] (200)		OUTPUT
+--AS
+--	DECLARE @VP_RESULTADO				VARCHAR(300) = ''		
+--	-- ///////////////////////////////////////////
+--	IF @VP_RESULTADO=''
+--		EXECUTE [dbo].[PG_RN_ARCUSFIL_PROGRAM_CLAVE_EXISTE]	@PP_K_SISTEMA_EXE, @PP_K_USUARIO_ACCION,
+--															@PP_K_ARCUSFIL_PROGRAM,	 
+--															@OU_RESULTADO_VALIDACION = @VP_RESULTADO		OUTPUT
+--	-- ///////////////////////////////////////////	
+--	IF	@VP_RESULTADO<>''
+--		SET	@VP_RESULTADO = @VP_RESULTADO + ' //INS//'	
+--	-- ///////////////////////////////////////////		
+--	SET @OU_RESULTADO_VALIDACION = @VP_RESULTADO
+--	-- /////////////////////////////////////////////////////
+--GO
 
 
 -- //////////////////////////////////////////////////////////////

@@ -7,7 +7,7 @@
 -- // CREATION DATE:	20210201
 -- ////////////////////////////////////////////////////////////// 
 
-USE [DATA_02Pruebas]
+USE [DATA_02]
 GO
 --			SELECT * FROM [APQP_TEAM_ACTIVITY_LIST]
 --			SELECT * FROM [APQP_TOOL_ACTIVITY_LIST]		
