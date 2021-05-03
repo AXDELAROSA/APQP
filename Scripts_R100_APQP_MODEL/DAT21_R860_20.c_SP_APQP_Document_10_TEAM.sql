@@ -178,7 +178,7 @@ AS
 				GETDATE(),
 				-- ============================
 				0,							0,
-				0,
+				1,
 				-- ============================
 				@PP_K_USUARIO_ACCION, GETDATE(), @PP_K_USUARIO_ACCION, GETDATE(),
 				0, NULL, NULL  )
@@ -315,18 +315,6 @@ GO
 --														'1/1/1/0/0/0/0/0/0/0/0/0/0/0/0' , 
 --														'0/0/0/0/0/0/0/0/0/0/0/0/0/0/0' , 
 --														'0/0/0/0/0/0/0/0/0/0/0/0/0/0/0' 
---		 EXECUTE [dbo].[PG_UP_APQP_TEAM_HDR] 0,139,		1 , 1 ,										
---														0 , 1 , 0 ,
---														'2/3/4/5/6/7/8/9/10/11/12/13/14/15/16' , 
---														'1/1/1/1/0/0/0/0/0/0/0/0/0/0/0' , 
---														'0/0/0/0/0/0/0/0/0/0/0/0/0/0/0' , 
---														'0/0/0/0/0/0/0/0/0/0/0/0/0/0/0'
-
---		EXECUTE	[dbo].[PG_UP_APQP_TEAM_DET]	0,139,		'2/3/4/5/6/7/8/9/10/11/12/13/14/15/16' , 
---														'1/1/1/0/0/0/0/0/0/0/0/0/0/0/0' , 
---														'0/0/0/0/0/0/0/0/0/0/0/0/0/0/0' , 
---														'0/0/0/0/0/0/0/0/0/0/0/0/0/0/0'
-
 CREATE PROCEDURE [dbo].[PG_UP_APQP_TEAM_HDR]
 	@PP_K_SISTEMA_EXE					INT,
 	@PP_K_USUARIO_ACCION				INT,
@@ -396,12 +384,58 @@ BEGIN TRY
 		
 	IF	(	@PP_TOTAL_COMPLETADAS	)		>=	(	@PP_TOTAL_ACTIVIDADES	)
 	BEGIN
-		SET @PP_K_STATUS_APQP_DOCUMENT	= 10
+		SET @PP_K_STATUS_APQP_DOCUMENT	= 10			--	STATUS: DOCUMENTO COMPLETADO
+
+		UPDATE	APQP_MODEL_DET
+		SET		 K_STATUS_APQP_MODEL			= 11	-- ACTIVIDAD CERRADA
+				,L_APQP_MODEL_DET_COMPLETED		= 1
+				,F_APQP_MODEL_DET_COMPLETED		= GETDATE()
+				-- ===========================	= -- ===========================
+				,[F_CAMBIO]						= GETDATE() 
+				,[K_USUARIO_CAMBIO]				= @PP_K_USUARIO_ACCION
+		WHERE	K_APQP_MODEL_ACTIVITY_LIST		= 4
+		AND		K_APQP_MODEL_HDR				= @PP_K_APQP_MODEL_HDR
+
 	END
 	ELSE
 	BEGIN
-		SET @PP_K_STATUS_APQP_DOCUMENT	= 20
+		SET @PP_K_STATUS_APQP_DOCUMENT	= 20		--	STATUS: DOCUMENTO NO COMPLETADO
+		
+		IF @PP_SUMMARY <= 0
+		BEGIN
+
+			UPDATE	APQP_MODEL_DET
+			SET		 K_STATUS_APQP_MODEL			= 10	-- ACTIVIDAD ABIERTA
+					,L_APQP_MODEL_DET_COMPLETED		= 0
+					,F_APQP_MODEL_DET_COMPLETED		= NULL
+					-- ===========================	= -- ===========================
+					,[F_CAMBIO]						= GETDATE() 
+					,[K_USUARIO_CAMBIO]				= @PP_K_USUARIO_ACCION
+			WHERE	K_APQP_MODEL_ACTIVITY_LIST		= 4
+			AND		K_APQP_MODEL_HDR				= @PP_K_APQP_MODEL_HDR
+		END
+		ELSE
+		BEGIN
+		UPDATE	APQP_MODEL_DET
+		SET		 K_STATUS_APQP_MODEL			= 12	-- ACTIVIDAD EN PROCESO
+				,L_APQP_MODEL_DET_COMPLETED		= 0
+				,F_APQP_MODEL_DET_COMPLETED		= GETDATE()
+				-- ===========================	= -- ===========================
+				,[F_CAMBIO]						= GETDATE() 
+				,[K_USUARIO_CAMBIO]				= @PP_K_USUARIO_ACCION
+		WHERE	K_APQP_MODEL_ACTIVITY_LIST		= 4
+		AND		K_APQP_MODEL_HDR				= @PP_K_APQP_MODEL_HDR
+		END
 	END
+
+	IF @@ROWCOUNT = 0
+		BEGIN
+			--DECLARE @VP_ERROR_2 VARCHAR(250)='El APQP_MODEL_HDR no fue actualizado. [APQP_MODEL_HDR#'+CONVERT(VARCHAR(10),@PP_K_APQP_MODEL_HDR)+']'
+			SET @VP_MENSAJE='The record was not Updated.(MODEL_DET)'
+			RAISERROR (@VP_MENSAJE, 16, 1 ) 
+		END
+	-- ==================================================================================================================================================================
+	-- ==================================================================================================================================================================
 
 		UPDATE	APQP_TEAM_HDR
 		SET		-- ===========================	= -- ===========================	
@@ -412,9 +446,13 @@ BEGIN TRY
 		IF @@ROWCOUNT = 0
 		BEGIN
 			--DECLARE @VP_ERROR_2 VARCHAR(250)='El APQP_MODEL_HDR no fue actualizado. [APQP_MODEL_HDR#'+CONVERT(VARCHAR(10),@PP_K_APQP_MODEL_HDR)+']'
-			SET @VP_MENSAJE='The record was not Updated.'
+			SET @VP_MENSAJE='The record was not Updated.(MODEL_HDR)'
 			RAISERROR (@VP_MENSAJE, 16, 1 ) 
 		END
+	-- ==================================================================================================================================================================
+	-- ==================================================================================================================================================================
+
+
 -- /////////////////////////////////////////////////////////////////////
 COMMIT TRANSACTION 
 END TRY
@@ -432,7 +470,7 @@ END CATCH
 		SET	@VP_MENSAJE = '!!!! ' + @VP_MENSAJE 
 	END
 
-	SELECT	@VP_MENSAJE AS MENSAJE, @PP_K_APQP_MODEL_HDR AS CLAVE
+	SELECT	@VP_MENSAJE AS MENSAJE, @PP_K_APQP_TEAM_HDR AS CLAVE
 	-- //////////////////////////////////////////////////////////////
 GO
 

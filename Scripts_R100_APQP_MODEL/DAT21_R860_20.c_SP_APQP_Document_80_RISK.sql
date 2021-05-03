@@ -170,6 +170,7 @@ AS
 				-- ===========================
 				[K_STATUS_APQP_DOCUMENT],	
 				[F_APQP_RISK_HDR_CREATED],
+				[L_APQP_RISK_HDR_HIGH],
 				-- ===========================
 				[K_USUARIO_ALTA], [F_ALTA], [K_USUARIO_CAMBIO], [F_CAMBIO],
 				[L_BORRADO], [K_USUARIO_BAJA], [F_BAJA]  )
@@ -178,6 +179,7 @@ AS
 				-- ============================
 				20,	--	STATUS	#20	= INCOMPLETO
 				GETDATE(),
+				1,
 				-- ============================
 				@PP_K_USUARIO_ACCION, GETDATE(), @PP_K_USUARIO_ACCION, GETDATE(),
 				0, NULL, NULL  )
