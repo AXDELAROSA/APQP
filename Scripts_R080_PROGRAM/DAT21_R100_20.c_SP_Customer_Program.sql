@@ -1,16 +1,23 @@
 -- //////////////////////////////////////////////////////////////
 -- // DATA BASE:		DATA_02
 -- // MODULE:			ARCUSFIL_PROGRAM
--- // OPERATION:		TABLA
+-- // OPERATION:		STORED PROCEDURE
 -- //////////////////////////////////////////////////////////////
 -- // AUTHOR:			AX
 -- // CREATION DATE:	20210119
 -- ////////////////////////////////////////////////////////////// 
 
---USE [DATA_02]
+USE [DATA_02]
 GO
 
 -- //////////////////////////////////////////////////////////////
+-- //////		CONTENIDO DEL SP
+-- [PG_LI_ARCUSFIL_PROGRAM]
+-- [PG_SK_ARCUSFIL_PROGRAM]
+-- [PG_IN_ARCUSFIL_PROGRAM]
+-- [PG_UP_ARCUSFIL_PROGRAM]
+-- [PG_DL_ARCUSFIL_PROGRAM]
+
 -- //////////////////////////////////////////////////////////////
 -- // STORED PROCEDURE ---> SELECT / LISTADO
 -- //////////////////////////////////////////////////////////////
@@ -21,11 +28,15 @@ GO
 --		 EXECUTE [dbo].[PG_LI_ARCUSFIL_PROGRAM] 0,139,-1,1
 --		 EXECUTE [dbo].[PG_LI_ARCUSFIL_PROGRAM] 0,139,7,0
 --		 EXECUTE [dbo].[PG_LI_ARCUSFIL_PROGRAM] 0,139,7,1
+--		 EXECUTE [dbo].[PG_LI_ARCUSFIL_PROGRAM] 0,139,'IRVI02',1
+--		 EXECUTE [dbo].[PG_LI_ARCUSFIL_PROGRAM] 0,139,'IRVI02',0
+--		 EXECUTE [dbo].[PG_LI_ARCUSFIL_PROGRAM] 0,139,'',1
+--		 EXECUTE [dbo].[PG_LI_ARCUSFIL_PROGRAM] 0,139,'',0
 CREATE PROCEDURE [dbo].[PG_LI_ARCUSFIL_PROGRAM]
 	@PP_K_SISTEMA_EXE				INT,
 	@PP_K_USUARIO_ACCION			INT,
 	-- ===========================
-	@PP_K_ARCUSFIL					VARCHAR(200),
+	@PP_CUS_NO						VARCHAR(200),
 	@PP_L_DESGLOSAR					INT
 AS
 	DECLARE @VP_MENSAJE				VARCHAR(300) = ''
@@ -35,15 +46,14 @@ IF @PP_L_DESGLOSAR = 0
 BEGIN
 	SELECT		TOP (5000)
 				CUS_NO, 
-				A4GLIDENTITY	AS K_ARCUSFIL,
+				K_ARCUSFIL,
 				ARCUSFIL_PROGRAM.S_ARCUSFIL_PROGRAM,
 				-- =============================	
 				ARCUSFIL_PROGRAM.K_ARCUSFIL_PROGRAM
-	FROM		ARCUSFIL_SQL
-	INNER JOIN	ARCUSFIL_PROGRAM		ON ARCUSFIL_PROGRAM.K_ARCUSFIL=ARCUSFIL_SQL.A4GLIdentity
+	FROM		ARCUSFIL_PROGRAM			(NOLOCK)
 				-- =============================
 	WHERE		ARCUSFIL_PROGRAM.L_BORRADO<>1
-	AND			( @PP_K_ARCUSFIL=-1					OR	ARCUSFIL_PROGRAM.K_ARCUSFIL=@PP_K_ARCUSFIL)
+	AND			( @PP_CUS_NO=''							OR	ARCUSFIL_PROGRAM.CUS_NO	=	@PP_CUS_NO)
 				-- =============================
 	ORDER BY	CUS_NO	,ARCUSFIL_PROGRAM.S_ARCUSFIL_PROGRAM
 END
@@ -51,7 +61,7 @@ ELSE IF @PP_L_DESGLOSAR = 1
 BEGIN
 	SELECT		TOP (5000)
 				CUS_NO,	
-				A4GLIDENTITY	AS K_ARCUSFIL,
+				K_ARCUSFIL,
 				ARCUSFIL_PROGRAM.S_ARCUSFIL_PROGRAM			AS S_PROGRAM,
 				S_ARCUSFIL_PROGRAM_MODEL					AS S_MODEL,
 				D_ARCUSFIL_PROGRAM_MODEL					AS D_MODEL,
@@ -74,17 +84,298 @@ BEGIN
 				ARCUSFIL_PROGRAM_MODEL.K_ARCUSFIL_PROGRAM_MODEL,
 				ARCUSFIL_PROGRAM.K_ARCUSFIL_PROGRAM
 				-- =============================	
-	FROM		ARCUSFIL_SQL
-	INNER JOIN	ARCUSFIL_PROGRAM		ON ARCUSFIL_PROGRAM.K_ARCUSFIL=ARCUSFIL_SQL.A4GLIdentity
-	INNER JOIN	ARCUSFIL_PROGRAM_MODEL	ON ARCUSFIL_PROGRAM.K_ARCUSFIL_PROGRAM=ARCUSFIL_PROGRAM_MODEL.K_ARCUSFIL_PROGRAM
+	FROM		ARCUSFIL_PROGRAM		(NOLOCK)	
+	INNER JOIN	ARCUSFIL_PROGRAM_MODEL	(NOLOCK)	ON ARCUSFIL_PROGRAM.K_ARCUSFIL_PROGRAM=ARCUSFIL_PROGRAM_MODEL.K_ARCUSFIL_PROGRAM
 				-- =============================
 	WHERE		ARCUSFIL_PROGRAM.L_BORRADO<>1
-	AND			( @PP_K_ARCUSFIL=-1					OR	ARCUSFIL_PROGRAM.K_ARCUSFIL=@PP_K_ARCUSFIL)
+	AND			( @PP_CUS_NO=''							OR	ARCUSFIL_PROGRAM.CUS_NO	=	@PP_CUS_NO)
 				-- =============================
 	ORDER BY	CUS_NO	,ARCUSFIL_PROGRAM.S_ARCUSFIL_PROGRAM
 END
 	-- /////////////////////////////////////////////////////////////////////
 GO
+
+
+-- //////////////////////////////////////////////////////////////
+-- // STORED PROCEDURE ---> SELECT / FICHA
+-- //////////////////////////////////////////////////////////////
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[PG_SK_ARCUSFIL_PROGRAM]') AND type in (N'P', N'PC'))
+	DROP PROCEDURE [dbo].[PG_SK_ARCUSFIL_PROGRAM]
+GO
+--		 EXECUTE [dbo].[PG_SK_ARCUSFIL_PROGRAM] 0,139,7
+CREATE PROCEDURE [dbo].[PG_SK_ARCUSFIL_PROGRAM]
+	@PP_K_SISTEMA_EXE				INT,
+	@PP_K_USUARIO_ACCION			INT,
+	-- ===========================
+	@PP_K_ARCUSFIL_PROGRAM			INT
+AS
+	-- ///////////////////////////////////////////
+	SELECT		TOP (1)
+				ARCUSFIL_PROGRAM.*
+				-- =============================	
+	FROM		ARCUSFIL_PROGRAM		(NOLOCK)
+				-- =============================
+	WHERE		ARCUSFIL_PROGRAM.K_ARCUSFIL_PROGRAM=@PP_K_ARCUSFIL_PROGRAM
+				-- =============================
+	-- ////////////////////////////////////////////////////////////////////
+GO
+
+
+-- //////////////////////////////////////////////////////////////
+-- // STORED PROCEDURE ---> INSERT
+-- //////////////////////////////////////////////////////////////
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[PG_IN_ARCUSFIL_PROGRAM]') AND type in (N'P', N'PC'))
+	DROP PROCEDURE [dbo].[PG_IN_ARCUSFIL_PROGRAM]
+GO
+--		 EXECUTE [dbo].[PG_IN_ARCUSFIL_PROGRAM] 0,139,
+CREATE PROCEDURE [dbo].[PG_IN_ARCUSFIL_PROGRAM]
+	@PP_K_SISTEMA_EXE					INT,
+	@PP_K_USUARIO_ACCION				INT,
+	-- ===========================
+	@PP_S_ARCUSFIL_PROGRAM				VARCHAR(50),
+	-- ===========================
+	@PP_CUS_NO							VARCHAR(6)
+AS
+	DECLARE @VP_MENSAJE					VARCHAR(300) = ''
+			,@VP_K_ARCUSFIL_SQL			INT = 0
+			,@VP_K_ARCUSFIL_PROGRAM		INT = 0
+BEGIN TRANSACTION 
+BEGIN TRY
+	---- /////////////////////////////////////////////////////////////////////
+
+	SELECT	@VP_K_ARCUSFIL_SQL	= A4GLIdentity
+	FROM	ARCUSFIL_SQL	(NOLOCK)
+	WHERE	CUS_NO			= @PP_CUS_NO
+
+	-- ===========================
+	INSERT INTO ARCUSFIL_PROGRAM
+			(	[S_ARCUSFIL_PROGRAM],
+				-- ===========================
+				[K_ARCUSFIL],
+				[CUS_NO],
+				-- ===========================
+				[K_USUARIO_ALTA], [F_ALTA], [K_USUARIO_CAMBIO], [F_CAMBIO],
+				[L_BORRADO], [K_USUARIO_BAJA], [F_BAJA]  )
+	VALUES	
+			(	@PP_S_ARCUSFIL_PROGRAM,
+				-- ===========================
+				@VP_K_ARCUSFIL_SQL,
+				@PP_CUS_NO,
+				-- ===========================
+				@PP_K_USUARIO_ACCION, GETDATE(), @PP_K_USUARIO_ACCION, GETDATE(),
+				0, NULL, NULL  )
+
+		IF @@ROWCOUNT = 0
+		BEGIN
+			--SET @VP_MENSAJE='El ARCUSFIL_PROGRAM no fue insertado. [ARCUSFIL_PROGRAM#'+CONVERT(VARCHAR(10),@VP_K_ARCUSFIL_PROGRAM)+']'
+			SET @VP_MENSAJE='The record was not inserted.'
+			RAISERROR (@VP_MENSAJE, 16, 1 )
+		END
+		ELSE
+		BEGIN
+			SELECT @VP_K_ARCUSFIL_PROGRAM=SCOPE_IDENTITY()
+
+			IF @VP_K_ARCUSFIL_PROGRAM=NULL
+			BEGIN
+				--SET @VP_MENSAJE='Error en la asignación de IDENTIDAD.'
+				SET @VP_MENSAJE='The record was not inserted.(identity)'
+				RAISERROR (@VP_MENSAJE, 16, 1 )
+			END
+		END
+
+	-- //////////////////////////////////////////////////////////////
+	EXECUTE [dbo].[PG_RN_ARCUSFIL_PROGRAM_UNIQUE]	@PP_K_SISTEMA_EXE, @PP_K_USUARIO_ACCION,
+													@VP_K_ARCUSFIL_SQL,
+													@VP_K_ARCUSFIL_PROGRAM, @PP_S_ARCUSFIL_PROGRAM,
+													@OU_RESULTADO_VALIDACION = @VP_MENSAJE		OUTPUT	
+	IF @VP_MENSAJE<>''
+	BEGIN
+		RAISERROR (@VP_MENSAJE, 16, 1 )
+	END
+	-- /////////////////////////////////////////////////////////////////////
+COMMIT TRANSACTION 
+END TRY
+
+BEGIN CATCH
+	/* Ocurrió un error, deshacemos los cambios*/ 
+	ROLLBACK TRANSACTION
+	DECLARE @VP_ERROR_TRANS NVARCHAR(4000);
+	SET @VP_ERROR_TRANS = ERROR_MESSAGE() 
+	SET @VP_MENSAJE = 'ERROR:// ' + @VP_ERROR_TRANS
+END CATCH
+	
+	IF @VP_MENSAJE<>''
+		BEGIN
+			SET	@VP_MENSAJE = '!!!! ' + @VP_MENSAJE 
+		END
+
+	SELECT	@VP_MENSAJE AS MENSAJE, @VP_K_ARCUSFIL_PROGRAM AS CLAVE
+	-- //////////////////////////////////////////////////////////////
+GO
+
+
+-- //////////////////////////////////////////////////////////////
+-- // STORED PROCEDURE ---> UPDATE / FICHA
+-- //////////////////////////////////////////////////////////////
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[PG_UP_ARCUSFIL_PROGRAM]') AND type in (N'P', N'PC'))
+	DROP PROCEDURE [dbo].[PG_UP_ARCUSFIL_PROGRAM]
+GO
+--		 EXECUTE [dbo].[PG_UP_ARCUSFIL_PROGRAM] 0,139,  1 , 21 
+CREATE PROCEDURE [dbo].[PG_UP_ARCUSFIL_PROGRAM]
+	@PP_K_SISTEMA_EXE					INT,
+	@PP_K_USUARIO_ACCION				INT,
+	-- ===========================
+	@PP_K_ARCUSFIL_PROGRAM				INT,
+	@PP_S_ARCUSFIL_PROGRAM				VARCHAR(20),
+	-- ===========================
+	@PP_CUS_NO							VARCHAR(6)
+AS			
+	DECLARE  @VP_MENSAJE				VARCHAR(300) = ''
+			,@VP_K_ARCUSFIL_SQL			INT = 0
+
+BEGIN TRANSACTION 
+BEGIN TRY
+	---- /////////////////////////////////////////////////////////////////////
+
+	SELECT	@VP_K_ARCUSFIL_SQL	= A4GLIdentity
+	FROM	ARCUSFIL_SQL	(NOLOCK)
+	WHERE	CUS_NO			= @PP_CUS_NO
+	-- /////////////////////////////////////////////////////////////////////
+	EXECUTE [dbo].[PG_RN_ARCUSFIL_PROGRAM_UPDATE]	@PP_K_SISTEMA_EXE, @PP_K_USUARIO_ACCION,
+												@PP_K_ARCUSFIL_PROGRAM, 
+												@OU_RESULTADO_VALIDACION = @VP_MENSAJE		OUTPUT
+	-- /////////////////////////////////////////////////////////////////////
+	IF @VP_MENSAJE<>''
+	BEGIN
+		RAISERROR (@VP_MENSAJE, 16, 1 )
+	END
+	
+	EXECUTE [dbo].[PG_RN_ARCUSFIL_PROGRAM_UNIQUE]	@PP_K_SISTEMA_EXE, @PP_K_USUARIO_ACCION,
+													@VP_K_ARCUSFIL_SQL,	
+													@PP_K_ARCUSFIL_PROGRAM, @PP_S_ARCUSFIL_PROGRAM,
+													@OU_RESULTADO_VALIDACION = @VP_MENSAJE		OUTPUT
+		-- //////////////////////////////////////////////////////////////
+	IF @VP_MENSAJE<>''
+	BEGIN
+		RAISERROR (@VP_MENSAJE, 16, 1 )
+	END
+
+	UPDATE	ARCUSFIL_PROGRAM
+	SET		
+			[S_ARCUSFIL_PROGRAM]			= @PP_S_ARCUSFIL_PROGRAM,
+			-- ===========================	= -- ============================
+			[K_ARCUSFIL]					= @VP_K_ARCUSFIL_SQL,
+			[CUS_NO]						= @PP_CUS_NO,
+			-- ===========================	= -- ============================
+			[F_CAMBIO]						= GETDATE(), 
+			[K_USUARIO_CAMBIO]				= @PP_K_USUARIO_ACCION
+	WHERE	K_ARCUSFIL_PROGRAM=@PP_K_ARCUSFIL_PROGRAM
+	
+	IF @@ROWCOUNT = 0
+	BEGIN
+		--DECLARE @VP_ERROR_2 VARCHAR(250)='El ARCUSFIL_PROGRAM no fue actualizado. [ARCUSFIL_PROGRAM#'+CONVERT(VARCHAR(10),@PP_K_ARCUSFIL_PROGRAM)+']'
+		SET @VP_MENSAJE='The record was not Updated.'
+		RAISERROR (@VP_MENSAJE, 16, 1 ) 
+	END
+-- /////////////////////////////////////////////////////////////////////
+COMMIT TRANSACTION 
+END TRY
+
+BEGIN CATCH
+	/* Ocurrió un error, deshacemos los cambios*/ 
+	ROLLBACK TRANSACTION
+	DECLARE @VP_ERROR_TRANS NVARCHAR(4000);
+	SET @VP_ERROR_TRANS = ERROR_MESSAGE() 
+	SET @VP_MENSAJE = 'ERROR:// ' + @VP_ERROR_TRANS
+END CATCH
+	
+	IF @VP_MENSAJE<>''
+	BEGIN
+		SET	@VP_MENSAJE = '!!!! ' + @VP_MENSAJE 
+	END
+
+	SELECT	@VP_MENSAJE AS MENSAJE, @PP_K_ARCUSFIL_PROGRAM AS CLAVE
+	-- //////////////////////////////////////////////////////////////
+GO
+
+
+-- //////////////////////////////////////////////////////////////
+-- // STORED PROCEDURE ---> DELETE / FICHA
+-- //////////////////////////////////////////////////////////////
+--  EXECUTE [dbo].[PG_SK_ARCUSFIL_PROGRAM] 0,139,9
+--	EXECUTE [dbo].[PG_DL_ARCUSFIL_PROGRAM] 0,139,9
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[PG_DL_ARCUSFIL_PROGRAM]') AND type in (N'P', N'PC'))
+	DROP PROCEDURE [dbo].[PG_DL_ARCUSFIL_PROGRAM]
+GO
+
+CREATE PROCEDURE [dbo].[PG_DL_ARCUSFIL_PROGRAM]
+	@PP_K_SISTEMA_EXE				INT,
+	@PP_K_USUARIO_ACCION			INT,
+	-- ===========================
+	@PP_K_ARCUSFIL_PROGRAM			INT
+AS
+DECLARE @VP_MENSAJE				VARCHAR(300) = ''
+BEGIN TRANSACTION 
+BEGIN TRY
+	--/////////////////////////////////////////////////////////////
+	EXECUTE [dbo].[PG_RN_ARCUSFIL_PROGRAM_DELETE]	@PP_K_SISTEMA_EXE, @PP_K_USUARIO_ACCION,
+													@PP_K_ARCUSFIL_PROGRAM, 
+													@OU_RESULTADO_VALIDACION = @VP_MENSAJE		OUTPUT
+
+
+	--IF (
+	--SELECT	COUNT(K_QUOTE_TRIM_LEVEL) 
+	--FROM	COT19_Cotizaciones_V9999_R0.DBO.QUOTE_TRIM_LEVEL
+	--WHERE	K_ARCUSFIL_PROGRAM	= @PP_K_ARCUSFIL_PROGRAM
+	--AND		K_STATUS_QUOTE_TRIM_LEVEL NOT IN (3,4)	) > 0
+	--BEGIN
+	--	SET @VP_MENSAJE='The program cannot be deleted. Models are assigned to the production system.'
+	--	RAISERROR (@VP_MENSAJE, 16, 1 ) 
+	--END
+	--////////////////////////////////////////////////////////////
+	IF @VP_MENSAJE=''
+		BEGIN		
+		UPDATE	ARCUSFIL_PROGRAM
+		SET		
+				[L_BORRADO]				= 1,
+				-- ====================
+				[F_BAJA]				= GETDATE(), 
+				[K_USUARIO_BAJA]		= @PP_K_USUARIO_ACCION
+		WHERE	K_ARCUSFIL_PROGRAM		= @PP_K_ARCUSFIL_PROGRAM
+	
+		IF @@ROWCOUNT = 0
+			BEGIN
+				--DECLARE @VP_ERROR_2 VARCHAR(250)='No fue actualizado. [ARCUSFIL_PROGRAM#'+CONVERT(VARCHAR(10),@PP_K_ARCUSFIL_PROGRAM)+']'
+				SET @VP_MENSAJE='The record was not inserted.'
+				RAISERROR (@VP_MENSAJE, 16, 1 ) 
+			END
+		
+		END
+
+	-- /////////////////////////////////////////////////////////////////////
+COMMIT TRANSACTION 
+END TRY
+
+BEGIN CATCH
+	/* Ocurrió un error, deshacemos los cambios*/ 
+	ROLLBACK TRANSACTION
+	DECLARE @VP_ERROR_TRANS NVARCHAR(4000);
+	SET @VP_ERROR_TRANS = ERROR_MESSAGE() 
+	SET @VP_MENSAJE = 'ERROR:// ' + @VP_ERROR_TRANS
+END CATCH
+	
+	IF @VP_MENSAJE<>''
+		BEGIN
+			SET	@VP_MENSAJE = '!!!! ' + @VP_MENSAJE 
+		END
+
+	SELECT	@VP_MENSAJE AS MENSAJE, @PP_K_ARCUSFIL_PROGRAM AS CLAVE
+	-- //////////////////////////////////////////////////////////////	
+GO
+
+-- //////////////////////////////////////////////////////////////
+-- //////////////////////////////////////////////////////////////
+-- //////////////////////////////////////////////////////////////
 
 
 -- //////////////////////////////////////////////////////////////
@@ -144,31 +435,6 @@ GO
 -- //////////////////////////////////////////////////////////////
 -- // STORED PROCEDURE ---> SELECT / FICHA
 -- //////////////////////////////////////////////////////////////
-IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[PG_SK_ARCUSFIL_PROGRAM]') AND type in (N'P', N'PC'))
-	DROP PROCEDURE [dbo].[PG_SK_ARCUSFIL_PROGRAM]
-GO
---		 EXECUTE [dbo].[PG_SK_ARCUSFIL_PROGRAM] 0,139,7
-CREATE PROCEDURE [dbo].[PG_SK_ARCUSFIL_PROGRAM]
-	@PP_K_SISTEMA_EXE				INT,
-	@PP_K_USUARIO_ACCION			INT,
-	-- ===========================
-	@PP_K_ARCUSFIL_PROGRAM			INT
-AS
-	-- ///////////////////////////////////////////
-	SELECT		TOP (1)
-				ARCUSFIL_PROGRAM.*
-				-- =============================	
-	FROM		ARCUSFIL_PROGRAM
-				-- =============================
-	WHERE		ARCUSFIL_PROGRAM.K_ARCUSFIL_PROGRAM=@PP_K_ARCUSFIL_PROGRAM
-				-- =============================
-	-- ////////////////////////////////////////////////////////////////////
-GO
-
-
--- //////////////////////////////////////////////////////////////
--- // STORED PROCEDURE ---> SELECT / FICHA
--- //////////////////////////////////////////////////////////////
 --IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[PG_SK_ARCUSFIL_PROGRAM_OPTION]') AND type in (N'P', N'PC'))
 --	DROP PROCEDURE [dbo].[PG_SK_ARCUSFIL_PROGRAM_OPTION]
 --GO
@@ -189,91 +455,6 @@ GO
 --				-- =============================
 --	-- ////////////////////////////////////////////////////////////////////
 --GO
-
-
--- //////////////////////////////////////////////////////////////
--- // STORED PROCEDURE ---> INSERT
--- //////////////////////////////////////////////////////////////
-IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[PG_IN_ARCUSFIL_PROGRAM]') AND type in (N'P', N'PC'))
-	DROP PROCEDURE [dbo].[PG_IN_ARCUSFIL_PROGRAM]
-GO
---		 EXECUTE [dbo].[PG_IN_ARCUSFIL_PROGRAM] 0,139,
-CREATE PROCEDURE [dbo].[PG_IN_ARCUSFIL_PROGRAM]
-	@PP_K_SISTEMA_EXE					INT,
-	@PP_K_USUARIO_ACCION				INT,
-	-- ===========================
-	@PP_S_ARCUSFIL_PROGRAM				VARCHAR(20),
-	-- ===========================
-	@PP_K_ARCUSFIL						INT
-AS
-	DECLARE @VP_MENSAJE					VARCHAR(300) = ''
-			,@VP_K_ARCUSFIL_PROGRAM		INT = 0
-BEGIN TRANSACTION 
-BEGIN TRY
-	---- /////////////////////////////////////////////////////////////////////
-	-- ===========================
-	INSERT INTO ARCUSFIL_PROGRAM
-			(	[S_ARCUSFIL_PROGRAM],
-				-- ===========================
-				[K_ARCUSFIL],
-				-- ===========================
-				[K_USUARIO_ALTA], [F_ALTA], [K_USUARIO_CAMBIO], [F_CAMBIO],
-				[L_BORRADO], [K_USUARIO_BAJA], [F_BAJA]  )
-	VALUES	
-			(	@PP_S_ARCUSFIL_PROGRAM,
-				-- ===========================
-				@PP_K_ARCUSFIL,
-				-- ===========================
-				@PP_K_USUARIO_ACCION, GETDATE(), @PP_K_USUARIO_ACCION, GETDATE(),
-				0, NULL, NULL  )
-
-		IF @@ROWCOUNT = 0
-		BEGIN
-			--SET @VP_MENSAJE='El ARCUSFIL_PROGRAM no fue insertado. [ARCUSFIL_PROGRAM#'+CONVERT(VARCHAR(10),@VP_K_ARCUSFIL_PROGRAM)+']'
-			SET @VP_MENSAJE='The record was not inserted.'
-			RAISERROR (@VP_MENSAJE, 16, 1 )
-		END
-		ELSE
-		BEGIN
-			SELECT @VP_K_ARCUSFIL_PROGRAM=SCOPE_IDENTITY()
-
-			IF @VP_K_ARCUSFIL_PROGRAM=NULL
-			BEGIN
-				--SET @VP_MENSAJE='Error en la asignación de IDENTIDAD.'
-				SET @VP_MENSAJE='The record was not inserted.(identity)'
-				RAISERROR (@VP_MENSAJE, 16, 1 )
-			END
-		END
-
-	-- //////////////////////////////////////////////////////////////
-	EXECUTE [dbo].[PG_RN_ARCUSFIL_PROGRAM_UNIQUE]	@PP_K_SISTEMA_EXE, @PP_K_USUARIO_ACCION,
-													@PP_K_ARCUSFIL,
-													@VP_K_ARCUSFIL_PROGRAM, @PP_S_ARCUSFIL_PROGRAM,
-													@OU_RESULTADO_VALIDACION = @VP_MENSAJE		OUTPUT	
-	IF @VP_MENSAJE<>''
-	BEGIN
-		RAISERROR (@VP_MENSAJE, 16, 1 )
-	END
-	-- /////////////////////////////////////////////////////////////////////
-COMMIT TRANSACTION 
-END TRY
-
-BEGIN CATCH
-	/* Ocurrió un error, deshacemos los cambios*/ 
-	ROLLBACK TRANSACTION
-	DECLARE @VP_ERROR_TRANS NVARCHAR(4000);
-	SET @VP_ERROR_TRANS = ERROR_MESSAGE() 
-	SET @VP_MENSAJE = 'ERROR:// ' + @VP_ERROR_TRANS
-END CATCH
-	
-	IF @VP_MENSAJE<>''
-		BEGIN
-			SET	@VP_MENSAJE = '!!!! ' + @VP_MENSAJE 
-		END
-
-	SELECT	@VP_MENSAJE AS MENSAJE, @VP_K_ARCUSFIL_PROGRAM AS CLAVE
-	-- //////////////////////////////////////////////////////////////
-GO
 
 
 -- //////////////////////////////////////////////////////////////
@@ -363,82 +544,6 @@ GO
 
 
 -- //////////////////////////////////////////////////////////////
--- // STORED PROCEDURE ---> UPDATE / FICHA
--- //////////////////////////////////////////////////////////////
-IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[PG_UP_ARCUSFIL_PROGRAM]') AND type in (N'P', N'PC'))
-	DROP PROCEDURE [dbo].[PG_UP_ARCUSFIL_PROGRAM]
-GO
--- EXECUTE [dbo].[PG_UP_ARCUSFIL_PROGRAM] 0,139,  1 , 21 , 'TELFONO IP' , '76855545649' , '' , 'PANASONIC' , 'KX-T7630' , '2,890.50' , 1 , 1 , 11 , 1
-CREATE PROCEDURE [dbo].[PG_UP_ARCUSFIL_PROGRAM]
-	@PP_K_SISTEMA_EXE					INT,
-	@PP_K_USUARIO_ACCION				INT,
-	-- ===========================
-	@PP_K_ARCUSFIL_PROGRAM				INT,
-	@PP_S_ARCUSFIL_PROGRAM				VARCHAR(20),
-	@PP_D_ARCUSFIL_PROGRAM				VARCHAR(500),
-	-- ===========================
-	@PP_K_ARCUSFIL						INT
-AS			
-DECLARE @VP_MENSAJE					VARCHAR(300) = ''
-BEGIN TRANSACTION 
-BEGIN TRY
-	-- /////////////////////////////////////////////////////////////////////
-	EXECUTE [dbo].[PG_RN_ARCUSFIL_PROGRAM_UPDATE]	@PP_K_SISTEMA_EXE, @PP_K_USUARIO_ACCION,
-												@PP_K_ARCUSFIL_PROGRAM, 
-												@OU_RESULTADO_VALIDACION = @VP_MENSAJE		OUTPUT
-	-- /////////////////////////////////////////////////////////////////////
-	IF @VP_MENSAJE<>''
-	BEGIN
-		RAISERROR (@VP_MENSAJE, 16, 1 )
-	END
-	
-	EXECUTE [dbo].[PG_RN_ARCUSFIL_PROGRAM_UNIQUE]	@PP_K_SISTEMA_EXE, @PP_K_USUARIO_ACCION,
-												@PP_K_ARCUSFIL_PROGRAM, @PP_D_ARCUSFIL_PROGRAM,
-												@OU_RESULTADO_VALIDACION = @VP_MENSAJE		OUTPUT	
-		-- //////////////////////////////////////////////////////////////
-	IF @VP_MENSAJE<>''
-	BEGIN
-		RAISERROR (@VP_MENSAJE, 16, 1 )
-	END
-
-	UPDATE	ARCUSFIL_PROGRAM
-	SET		[S_ARCUSFIL_PROGRAM]				= @PP_S_ARCUSFIL_PROGRAM,
-			-- ===========================	= -- ============================
-			[K_ARCUSFIL]						= @PP_K_ARCUSFIL,
-			-- ===========================	= -- ============================
-			[F_CAMBIO]						= GETDATE(), 
-			[K_USUARIO_CAMBIO]				= @PP_K_USUARIO_ACCION
-	WHERE	K_ARCUSFIL_PROGRAM=@PP_K_ARCUSFIL_PROGRAM
-	
-	IF @@ROWCOUNT = 0
-	BEGIN
-		--DECLARE @VP_ERROR_2 VARCHAR(250)='El ARCUSFIL_PROGRAM no fue actualizado. [ARCUSFIL_PROGRAM#'+CONVERT(VARCHAR(10),@PP_K_ARCUSFIL_PROGRAM)+']'
-		SET @VP_MENSAJE='The record was not Updated.'
-		RAISERROR (@VP_MENSAJE, 16, 1 ) 
-	END
--- /////////////////////////////////////////////////////////////////////
-COMMIT TRANSACTION 
-END TRY
-
-BEGIN CATCH
-	/* Ocurrió un error, deshacemos los cambios*/ 
-	ROLLBACK TRANSACTION
-	DECLARE @VP_ERROR_TRANS NVARCHAR(4000);
-	SET @VP_ERROR_TRANS = ERROR_MESSAGE() 
-	SET @VP_MENSAJE = 'ERROR:// ' + @VP_ERROR_TRANS
-END CATCH
-	
-	IF @VP_MENSAJE<>''
-	BEGIN
-		SET	@VP_MENSAJE = '!!!! ' + @VP_MENSAJE 
-	END
-
-	SELECT	@VP_MENSAJE AS MENSAJE, @PP_K_ARCUSFIL_PROGRAM AS CLAVE
-	-- //////////////////////////////////////////////////////////////
-GO
-
-
--- //////////////////////////////////////////////////////////////
 -- // STORED PROCEDURE ---> INSERT
 -- //////////////////////////////////////////////////////////////
 --IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[PG_UP_ARCUSFIL_PROGRAM_OPTION]') AND type in (N'P', N'PC'))
@@ -503,82 +608,3 @@ GO
 
 --	SELECT	@VP_MENSAJE AS MENSAJE, @PP_K_ARCUSFIL_PROGRAM_OPTION AS CLAVE
 --GO
-
-
--- //////////////////////////////////////////////////////////////
--- // STORED PROCEDURE ---> DELETE / FICHA
--- //////////////////////////////////////////////////////////////
---  EXECUTE [dbo].[PG_SK_ARCUSFIL_PROGRAM] 0,139,9
---	EXECUTE [dbo].[PG_DL_ARCUSFIL_PROGRAM] 0,139,9
-IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[PG_DL_ARCUSFIL_PROGRAM]') AND type in (N'P', N'PC'))
-	DROP PROCEDURE [dbo].[PG_DL_ARCUSFIL_PROGRAM]
-GO
-
-CREATE PROCEDURE [dbo].[PG_DL_ARCUSFIL_PROGRAM]
-	@PP_K_SISTEMA_EXE				INT,
-	@PP_K_USUARIO_ACCION			INT,
-	-- ===========================
-	@PP_K_ARCUSFIL_PROGRAM						INT
-AS
-DECLARE @VP_MENSAJE				VARCHAR(300) = ''
-BEGIN TRANSACTION 
-BEGIN TRY
-	--/////////////////////////////////////////////////////////////
-	EXECUTE [dbo].[PG_RN_ARCUSFIL_PROGRAM_DELETE]	@PP_K_SISTEMA_EXE, @PP_K_USUARIO_ACCION,
-													@PP_K_ARCUSFIL_PROGRAM, 
-													@OU_RESULTADO_VALIDACION = @VP_MENSAJE		OUTPUT
-
-
-	--IF (
-	--SELECT	COUNT(K_QUOTE_TRIM_LEVEL) 
-	--FROM	COT19_Cotizaciones_V9999_R0.DBO.QUOTE_TRIM_LEVEL
-	--WHERE	K_ARCUSFIL_PROGRAM	= @PP_K_ARCUSFIL_PROGRAM
-	--AND		K_STATUS_QUOTE_TRIM_LEVEL NOT IN (3,4)	) > 0
-	--BEGIN
-	--	SET @VP_MENSAJE='The program cannot be deleted. Models are assigned to the production system.'
-	--	RAISERROR (@VP_MENSAJE, 16, 1 ) 
-	--END
-	--////////////////////////////////////////////////////////////
-	IF @VP_MENSAJE=''
-		BEGIN		
-		UPDATE	ARCUSFIL_PROGRAM
-		SET		
-				[L_BORRADO]				= 1,
-				-- ====================
-				[F_BAJA]				= GETDATE(), 
-				[K_USUARIO_BAJA]		= @PP_K_USUARIO_ACCION
-		WHERE	K_ARCUSFIL_PROGRAM=@PP_K_ARCUSFIL_PROGRAM
-	
-		IF @@ROWCOUNT = 0
-			BEGIN
-				--DECLARE @VP_ERROR_2 VARCHAR(250)='No fue actualizado. [ARCUSFIL_PROGRAM#'+CONVERT(VARCHAR(10),@PP_K_ARCUSFIL_PROGRAM)+']'
-				SET @VP_MENSAJE='The record was not inserted.'
-				RAISERROR (@VP_MENSAJE, 16, 1 ) 
-			END
-		
-		END
-
-	-- /////////////////////////////////////////////////////////////////////
-COMMIT TRANSACTION 
-END TRY
-
-BEGIN CATCH
-	/* Ocurrió un error, deshacemos los cambios*/ 
-	ROLLBACK TRANSACTION
-	DECLARE @VP_ERROR_TRANS NVARCHAR(4000);
-	SET @VP_ERROR_TRANS = ERROR_MESSAGE() 
-	SET @VP_MENSAJE = 'ERROR:// ' + @VP_ERROR_TRANS
-END CATCH
-	
-	IF @VP_MENSAJE<>''
-		BEGIN
-			SET	@VP_MENSAJE = '!!!! ' + @VP_MENSAJE 
-		END
-
-	SELECT	@VP_MENSAJE AS MENSAJE, @PP_K_ARCUSFIL_PROGRAM AS CLAVE
-	-- //////////////////////////////////////////////////////////////	
-GO
-
--- //////////////////////////////////////////////////////////////
--- //////////////////////////////////////////////////////////////
--- //////////////////////////////////////////////////////////////
