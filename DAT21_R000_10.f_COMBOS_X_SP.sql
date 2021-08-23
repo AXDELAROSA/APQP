@@ -11,7 +11,16 @@
 GO
 
 -- //////////////////////////////////////////////////////////////
-
+-- //////		CONTENIDO DEL SP
+--	[PG_CB_ARCUSFIL_CONTINENTE]
+--	[PG_CB_ARCUSFIL_COUNTRY]
+--	[PG_CB_ARCUSFIL_STATE_GEO]
+--	[PG_CB_ARCUSFIL_ADDRES_TYPE]
+--	[PG_CB_ARCUSFIL_TERMS_PERIOD]
+--	[PG_CB_PROGRAM_APQP_MODEL]
+--	[PG_CB_STATUS_APQP_MODEL_HDR]
+--	[PG_CB_APQP_MODEL_HDR_TYPE]
+-- //////////////////////////////////////////////////////////////
 
 
 -- //////////////////////////////////////////////////////////////

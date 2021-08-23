@@ -7,7 +7,7 @@
 -- // CREATION DATE:	20210122
 -- ////////////////////////////////////////////////////////////// 
 
---USE [DATA_02]
+USE [DATA_02]
 GO
 
 -- //////////////////////////////////////////////////////////////
@@ -122,21 +122,26 @@ CREATE PROCEDURE [dbo].[PG_CI_ARCUSFIL_PROGRAM]
 	@PP_S_ARCUSFIL_PROGRAM				VARCHAR(20)
 	-- ===========================
 AS
+	IF (		SELECT	COUNT(S_ARCUSFIL_PROGRAM)
+				FROM	DATA_02.DBO.ARCUSFIL_PROGRAM
+				WHERE	S_ARCUSFIL_PROGRAM		= @PP_S_ARCUSFIL_PROGRAM		)	<=	0
+	BEGIN
 	-- ===========================
-	INSERT INTO ARCUSFIL_PROGRAM
-			(	[S_ARCUSFIL_PROGRAM],
-				-- ===========================
-				[K_ARCUSFIL],
-				-- ===========================
-				[K_USUARIO_ALTA], [F_ALTA], [K_USUARIO_CAMBIO], [F_CAMBIO],
-				[L_BORRADO], [K_USUARIO_BAJA], [F_BAJA]		)
-	VALUES	
-			(	LTRIM(RTRIM(@PP_S_ARCUSFIL_PROGRAM)),
-				-- ===========================
-				@PP_K_ARCUSFIL,
-				-- ===========================
-				@PP_K_USUARIO_ACCION, GETDATE(), @PP_K_USUARIO_ACCION, GETDATE(),
-				0, NULL, NULL  )
+		INSERT INTO ARCUSFIL_PROGRAM
+				(	[S_ARCUSFIL_PROGRAM],
+					-- ===========================
+					[K_ARCUSFIL],
+					-- ===========================
+					[K_USUARIO_ALTA], [F_ALTA], [K_USUARIO_CAMBIO], [F_CAMBIO],
+					[L_BORRADO], [K_USUARIO_BAJA], [F_BAJA]		)
+		VALUES	
+				(	LTRIM(RTRIM(@PP_S_ARCUSFIL_PROGRAM)),
+					-- ===========================
+					@PP_K_ARCUSFIL,
+					-- ===========================
+					@PP_K_USUARIO_ACCION, GETDATE(), @PP_K_USUARIO_ACCION, GETDATE(),
+					0, NULL, NULL  )
+	END
 	-- //////////////////////////////////////////////////////////////
 GO
 -- ===================================================================================================================
@@ -370,28 +375,33 @@ CREATE PROCEDURE [dbo].[PG_CI_ARCUSFIL_PROGRAM_MODEL]
 	--@PP_ARCUSFIL_PROGRAM_MODEL_MAKER	VARCHAR(255)
 AS
 	-- ===========================
-	INSERT INTO ARCUSFIL_PROGRAM_MODEL
-			(	[D_ARCUSFIL_PROGRAM_MODEL],			
-				[S_ARCUSFIL_PROGRAM_MODEL],
-				-- ===========================
-				[K_ARCUSFIL_PROGRAM],
-				-- ===========================
-				--[ARCUSFIL_PROGRAM_MODEL_TYPE],		[ARCUSFIL_PROGRAM_MODEL_YEAR],
-				--[ARCUSFIL_PROGRAM_MODEL_MAKER],			
-				-- ===========================
-				[K_USUARIO_ALTA], [F_ALTA], [K_USUARIO_CAMBIO], [F_CAMBIO],
-				[L_BORRADO], [K_USUARIO_BAJA], [F_BAJA]		)
-	VALUES	
-			(	LTRIM(RTRIM(@PP_D_ARCUSFIL_PROGRAM_MODEL)),			
-				LTRIM(RTRIM(@PP_S_ARCUSFIL_PROGRAM_MODEL)),
-				-- ===========================
-				@PP_K_ARCUSFIL_PROGRAM,
-				-- ===========================
-				--LTRIM(RTRIM(@PP_ARCUSFIL_PROGRAM_MODEL_TYPE)),		@PP_ARCUSFIL_PROGRAM_MODEL_YEAR,
-				--LTRIM(RTRIM(@PP_ARCUSFIL_PROGRAM_MODEL_MAKER)),
-				-- ===========================
-				@PP_K_USUARIO_ACCION, GETDATE(), @PP_K_USUARIO_ACCION, GETDATE(),
-				0, NULL, NULL  )	
+	IF (		SELECT	COUNT(S_ARCUSFIL_PROGRAM_MODEL)
+				FROM	DATA_02.DBO.ARCUSFIL_PROGRAM_MODEL
+				WHERE	S_ARCUSFIL_PROGRAM_MODEL		= @PP_S_ARCUSFIL_PROGRAM_MODEL		)	<=	0
+	BEGIN
+		INSERT INTO ARCUSFIL_PROGRAM_MODEL
+				(	[D_ARCUSFIL_PROGRAM_MODEL],			
+					[S_ARCUSFIL_PROGRAM_MODEL],
+					-- ===========================
+					[K_ARCUSFIL_PROGRAM],
+					-- ===========================
+					--[ARCUSFIL_PROGRAM_MODEL_TYPE],		[ARCUSFIL_PROGRAM_MODEL_YEAR],
+					--[ARCUSFIL_PROGRAM_MODEL_MAKER],			
+					-- ===========================
+					[K_USUARIO_ALTA], [F_ALTA], [K_USUARIO_CAMBIO], [F_CAMBIO],
+					[L_BORRADO], [K_USUARIO_BAJA], [F_BAJA]		)
+		VALUES	
+				(	LTRIM(RTRIM(@PP_D_ARCUSFIL_PROGRAM_MODEL)),			
+					LTRIM(RTRIM(@PP_S_ARCUSFIL_PROGRAM_MODEL)),
+					-- ===========================
+					@PP_K_ARCUSFIL_PROGRAM,
+					-- ===========================
+					--LTRIM(RTRIM(@PP_ARCUSFIL_PROGRAM_MODEL_TYPE)),		@PP_ARCUSFIL_PROGRAM_MODEL_YEAR,
+					--LTRIM(RTRIM(@PP_ARCUSFIL_PROGRAM_MODEL_MAKER)),
+					-- ===========================
+					@PP_K_USUARIO_ACCION, GETDATE(), @PP_K_USUARIO_ACCION, GETDATE(),
+					0, NULL, NULL  )
+	END
 	-- //////////////////////////////////////////////////////////////
 GO
 
