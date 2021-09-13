@@ -9,7 +9,7 @@
 
 USE [DATA_02]
 GO
-
+--SELECT * FROM [APQP_MODEL_HDR]
 -- //////////////////////////////////////////////////////////////
 -- //////////////////////////////////////////////////////////////
 -- // DROPs
@@ -158,7 +158,7 @@ AS
 	-- //////////////////////////////////////////////////////////////
 GO
 SET NOCOUNT ON
---EXECUTE [dbo].[PG_CI_APQP_MODEL_HDR_TYPE]  0, 139,	00, '( TO DEFINE )'			,'' , '2DFINE'	, 00 , 1
+EXECUTE [dbo].[PG_CI_APQP_MODEL_HDR_TYPE]  0, 139,	00, '( POR DEFINIR )'			,'' , 'XDFINR'	, 00 , 1
 EXECUTE [dbo].[PG_CI_APQP_MODEL_HDR_TYPE]  0, 139,	01, 'NUEVO MODELO'				,'' , 'NVOMOD'	, 10 , 1
 EXECUTE [dbo].[PG_CI_APQP_MODEL_HDR_TYPE]  0, 139,	02, 'CAMBIO INGENIERÍA'			,'' , 'CMBING'	, 20 , 1
 EXECUTE [dbo].[PG_CI_APQP_MODEL_HDR_TYPE]  0, 139,	03, 'SIN CAMBIOS'				,'' , 'NOCMBI'	, 30 , 1
