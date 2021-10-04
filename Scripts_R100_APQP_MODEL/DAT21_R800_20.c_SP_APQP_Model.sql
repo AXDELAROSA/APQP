@@ -16,6 +16,7 @@ GO
 -- [PG_LI_APQP_MODEL_DET]
 -- [PG_SK_APQP_MODEL_HDR]
 -- [PG_IN_APQP_MODEL_HDR]
+-- [PG_IN_APQP_MODEL_HDR_QUO]
 -- [PG_IN_APQP_MODEL_DET]
 -- [PG_UP_APQP_MODEL_DET_DEFAULT]
 -- [PG_UP_APQP_MODEL_HDR]
@@ -291,6 +292,140 @@ END CATCH
 
 	SELECT	@VP_MENSAJE AS MENSAJE, @VP_K_APQP_MODEL_HDR AS CLAVE
 	-- //////////////////////////////////////////////////////////////
+GO
+
+
+-- //////////////////////////////////////////////////////////////
+-- // STORED PROCEDURE ---> INSERT
+-- //////////////////////////////////////////////////////////////
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[PG_IN_APQP_MODEL_HDR_QUO]') AND type in (N'P', N'PC'))
+	DROP PROCEDURE [dbo].[PG_IN_APQP_MODEL_HDR_QUO]
+GO
+--		 EXECUTE [dbo].[PG_IN_APQP_MODEL_HDR_QUO] 0,139,  'TOOL' , 'TOOL ADD' , 46 , 1 , 1 , 1 , '20' , '2021/02/19' , '1020'
+CREATE PROCEDURE [dbo].[PG_IN_APQP_MODEL_HDR_QUO]
+	@PP_K_SISTEMA_EXE					INT,
+	@PP_K_USUARIO_ACCION				INT,
+	-- ===========================
+	@PP_D_APQP_MODEL_HDR				VARCHAR(200),
+	@PP_C_APQP_MODEL_HDR				VARCHAR(500),
+	-- ============================
+	@PP_K_ARCUSFIL						INT,
+	@PP_K_ARCUSFIL_PROGRAM				INT,
+	-- ============================
+	@PP_K_STATUS_APQP_MODEL				INT,
+	@PP_K_APQP_MODEL_HDR_TYPE			INT,
+	-- ============================
+	@PP_K_QUOTE_TRIM_LEVEL				INT,
+	@PP_F_APQP_MODEL_HDR_CREATED		DATE,
+	-- ============================
+	@PP_APQP_ECN_RFQ_SP_REFERENCE		VARCHAR(255)
+AS
+	DECLARE @VP_MENSAJE				NVARCHAR(MAX) = ''
+			,@VP_K_APQP_MODEL_HDR			INT = 0
+	-- /////////////////////////////////////////////////////////////////////
+	-- ===========================
+	INSERT INTO APQP_MODEL_HDR
+			(	[D_APQP_MODEL_HDR],				[C_APQP_MODEL_HDR],
+				-- ===========================
+				[K_ARCUSFIL],					[K_ARCUSFIL_PROGRAM],
+				-- ============================
+				[K_STATUS_APQP_MODEL],			[K_APQP_MODEL_HDR_TYPE],
+				-- ===========================
+				[K_QUOTE_TRIM_LEVEL],			[F_APQP_MODEL_HDR_CREATED],
+				[APQP_ECN_RFQ_SP_REFERENCE],
+				-- ===========================
+				[K_USUARIO_ALTA], [F_ALTA], [K_USUARIO_CAMBIO], [F_CAMBIO],
+				[L_BORRADO], [K_USUARIO_BAJA], [F_BAJA]  )
+	VALUES	
+			(	@PP_D_APQP_MODEL_HDR,			@PP_C_APQP_MODEL_HDR,
+				-- ============================
+				@PP_K_ARCUSFIL,					@PP_K_ARCUSFIL_PROGRAM,
+				-- ============================
+				@PP_K_STATUS_APQP_MODEL,		@PP_K_APQP_MODEL_HDR_TYPE,
+				-- ============================
+				@PP_K_QUOTE_TRIM_LEVEL,			@PP_F_APQP_MODEL_HDR_CREATED,
+				@PP_APQP_ECN_RFQ_SP_REFERENCE,
+				-- ===========================
+				@PP_K_USUARIO_ACCION, GETDATE(), @PP_K_USUARIO_ACCION, GETDATE(),
+				0, NULL, NULL  )
+
+		IF @@ROWCOUNT = 0
+		BEGIN
+			--SET @VP_MENSAJE='El APQP_MODEL_HDR no fue insertado. [APQP_MODEL_HDR#'+CONVERT(VARCHAR(10),@VP_K_APQP_MODEL_HDR)+']'
+			SET @VP_MENSAJE='The record was not inserted.'
+			RAISERROR (@VP_MENSAJE, 16, 1 )
+		END
+		ELSE
+		BEGIN
+			SELECT @VP_K_APQP_MODEL_HDR=SCOPE_IDENTITY()
+
+			IF @VP_K_APQP_MODEL_HDR=NULL
+			BEGIN
+				--SET @VP_MENSAJE='Error en la asignación de IDENTIDAD.'
+				SET @VP_MENSAJE='The record was not inserted.(identity)'
+				RAISERROR (@VP_MENSAJE, 16, 1 )
+			END
+		END
+	
+	-- //////////////////////////////////////////////////////////////
+	EXECUTE [dbo].[PG_RN_APQP_MODEL_HDR_UNIQUE]	@PP_K_SISTEMA_EXE, @PP_K_USUARIO_ACCION,
+												@VP_K_APQP_MODEL_HDR, @PP_D_APQP_MODEL_HDR,
+												@OU_RESULTADO_VALIDACION = @VP_MENSAJE		OUTPUT	
+	IF @VP_MENSAJE<>''
+	BEGIN
+		RAISERROR (@VP_MENSAJE, 16, 1 )
+	END
+
+	EXECUTE	[dbo].[PG_IN_APQP_MODEL_DET]	@PP_K_SISTEMA_EXE	,@PP_K_USUARIO_ACCION,
+											-- ===========================
+											@VP_K_APQP_MODEL_HDR,	@PP_K_APQP_MODEL_HDR_TYPE,
+											@PP_F_APQP_MODEL_HDR_CREATED
+
+	--========================================================================================
+	--		SE INSERTA EL VALOR POR DEFAULT PARA LAS DOS PRIMERAS ACTIVIDADES.	
+	EXECUTE	[dbo].[PG_UP_APQP_MODEL_DET_DEFAULT]	@PP_K_SISTEMA_EXE	,@PP_K_USUARIO_ACCION,
+													-- ===========================
+													@VP_K_APQP_MODEL_HDR
+																
+	--========================================================================================
+	--========================================================================================
+	--	A PARTIR DE AQUÍ SE INSERTARAN LOS REGISTROS PARA CADA UNO DE LOS DOCUMENTOS DEL MODELO
+	--	ES UN INSERT POR DOCUMENTO	(INDEX, TEAM, TOOL, QUAL, FLOOR, FLOW, PFMEA, CONTROL, RISK)
+	--	(	DAT21_R850_20.c_SP_APQP_Document	) SE ENCUENTRA EN ESTE ARCHIVO EL SP
+
+	EXECUTE	[dbo].[PG_IN_APQP_TEAM_HDR]		@PP_K_SISTEMA_EXE	,@PP_K_USUARIO_ACCION,
+											-- ===========================
+											@VP_K_APQP_MODEL_HDR
+
+	EXECUTE	[dbo].[PG_IN_APQP_TOOL_HDR]		@PP_K_SISTEMA_EXE	,@PP_K_USUARIO_ACCION,
+											-- ===========================
+											@VP_K_APQP_MODEL_HDR
+
+	EXECUTE	[dbo].[PG_IN_APQP_QUAL_HDR]		@PP_K_SISTEMA_EXE	,@PP_K_USUARIO_ACCION,
+											-- ===========================
+											@VP_K_APQP_MODEL_HDR
+
+	EXECUTE	[dbo].[PG_IN_APQP_FLOOR_HDR]	@PP_K_SISTEMA_EXE	,@PP_K_USUARIO_ACCION,
+											-- ===========================
+											@VP_K_APQP_MODEL_HDR
+
+	EXECUTE	[dbo].[PG_IN_APQP_FLOW_HDR]		@PP_K_SISTEMA_EXE	,@PP_K_USUARIO_ACCION,
+											-- ===========================
+											@VP_K_APQP_MODEL_HDR
+
+	EXECUTE	[dbo].[PG_IN_APQP_PFMEA_HDR]	@PP_K_SISTEMA_EXE	,@PP_K_USUARIO_ACCION,
+											-- ===========================
+											@VP_K_APQP_MODEL_HDR
+
+	EXECUTE	[dbo].[PG_IN_APQP_CONTROL_HDR]	@PP_K_SISTEMA_EXE	,@PP_K_USUARIO_ACCION,
+											-- ===========================
+											@VP_K_APQP_MODEL_HDR
+
+	EXECUTE	[dbo].[PG_IN_APQP_RISK_HDR]		@PP_K_SISTEMA_EXE	,@PP_K_USUARIO_ACCION,
+											-- ===========================
+											@VP_K_APQP_MODEL_HDR
+	-- /////////////////////////////////////////////////////////////////////
+	-- /////////////////////////////////////////////////////////////////////
 GO
 
 
@@ -615,6 +750,85 @@ GO
 -- //////////////////////////////////////////////////////////////
 -- // STORED PROCEDURE ---> UPDATE / FICHA
 -- //////////////////////////////////////////////////////////////
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[PG_UP_APQP_MODEL_HDR_QUO]') AND type in (N'P', N'PC'))
+	DROP PROCEDURE [dbo].[PG_UP_APQP_MODEL_HDR_QUO]
+GO
+--		 EXECUTE [dbo].[PG_UP_APQP_MODEL_HDR_QUO] 0,139,  1 , 21 , 'TELFONO IP' , '76855545649' , '' , 'PANASONIC' , 'KX-T7630' , '2,890.50' , 1 , 1 , 11 , 1
+CREATE PROCEDURE [dbo].[PG_UP_APQP_MODEL_HDR_QUO]
+	@PP_K_SISTEMA_EXE					INT,
+	@PP_K_USUARIO_ACCION				INT,
+	-- ===========================
+	@PP_K_APQP_MODEL_HDR				INT,
+	@PP_D_APQP_MODEL_HDR				VARCHAR(200),
+	@PP_C_APQP_MODEL_HDR				VARCHAR(500),
+	-- ============================
+	@PP_K_ARCUSFIL						INT,
+	@PP_K_ARCUSFIL_PROGRAM				INT,
+	-- ============================
+	@PP_K_STATUS_APQP_MODEL				INT,
+	@PP_K_APQP_MODEL_HDR_TYPE			INT,
+	-- ============================
+	@PP_K_QUOTE_TRIM_LEVEL				INT,
+	@PP_F_APQP_MODEL_HDR_CREATED		DATE,
+	-- ============================
+	@PP_APQP_ECN_RFQ_SP_REFERENCE		VARCHAR(255)
+AS			
+DECLARE @VP_MENSAJE					NVARCHAR(MAX) = ''
+-- /////////////////////////////////////////////////////////////////////
+	EXECUTE [dbo].[PG_RN_APQP_MODEL_HDR_UPDATE]	@PP_K_SISTEMA_EXE, @PP_K_USUARIO_ACCION,
+												@PP_K_APQP_MODEL_HDR, 
+												@OU_RESULTADO_VALIDACION = @VP_MENSAJE		OUTPUT
+-- /////////////////////////////////////////////////////////////////////
+	IF @VP_MENSAJE<>''
+	BEGIN
+		RAISERROR (@VP_MENSAJE, 16, 1 )
+	END
+	EXECUTE [dbo].[PG_RN_APQP_MODEL_HDR_UNIQUE]	@PP_K_SISTEMA_EXE, @PP_K_USUARIO_ACCION,
+												@PP_K_APQP_MODEL_HDR, @PP_D_APQP_MODEL_HDR,
+												@OU_RESULTADO_VALIDACION = @VP_MENSAJE		OUTPUT	
+		-- //////////////////////////////////////////////////////////////
+	IF @VP_MENSAJE<>''
+	BEGIN
+		RAISERROR (@VP_MENSAJE, 16, 1 )
+	END
+
+	UPDATE	APQP_MODEL_HDR
+	SET		[D_APQP_MODEL_HDR]				= @PP_D_APQP_MODEL_HDR,
+			[C_APQP_MODEL_HDR]				= @PP_C_APQP_MODEL_HDR,
+			-- ===========================	= -- ============================
+			[K_ARCUSFIL]					= @PP_K_ARCUSFIL,
+			[K_ARCUSFIL_PROGRAM]			= @PP_K_ARCUSFIL_PROGRAM,
+			-- ============================	= -- ============================
+			[K_STATUS_APQP_MODEL]			= @PP_K_STATUS_APQP_MODEL,
+			[K_APQP_MODEL_HDR_TYPE]			= @PP_K_APQP_MODEL_HDR_TYPE,
+			-- ===========================	= -- ============================
+			[K_QUOTE_TRIM_LEVEL]			= @PP_K_QUOTE_TRIM_LEVEL,
+			--[F_APQP_MODEL_HDR_CREATED]		= @PP_F_APQP_MODEL_HDR_CREATED,
+			-- ===========================	= -- ============================
+			[APQP_ECN_RFQ_SP_REFERENCE]		=  @PP_APQP_ECN_RFQ_SP_REFERENCE,
+			-- ====================
+			[F_CAMBIO]						= GETDATE(), 
+			[K_USUARIO_CAMBIO]				= @PP_K_USUARIO_ACCION
+	WHERE	K_APQP_MODEL_HDR=@PP_K_APQP_MODEL_HDR
+	
+	IF @@ROWCOUNT = 0
+	BEGIN
+		--DECLARE @VP_ERROR_2 VARCHAR(250)='El APQP_MODEL_HDR no fue actualizado. [APQP_MODEL_HDR#'+CONVERT(VARCHAR(10),@PP_K_APQP_MODEL_HDR)+']'
+		SET @VP_MENSAJE='The record was not Updated.'
+		RAISERROR (@VP_MENSAJE, 16, 1 ) 
+	END
+
+	EXECUTE	[dbo].[PG_UP_APQP_MODEL_DET]	@PP_K_SISTEMA_EXE	,@PP_K_USUARIO_ACCION,
+											-- ===========================
+											@PP_K_APQP_MODEL_HDR,	@PP_F_APQP_MODEL_HDR_CREATED
+-- /////////////////////////////////////////////////////////////////////
+-- //////////////////////////////////////////////////////////////
+GO
+
+
+-- //////////////////////////////////////////////////////////////
+-- // STORED PROCEDURE ---> UPDATE / FICHA
+-- //////////////////////////////////////////////////////////////
 IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[PG_UP_APQP_MODEL_HDR_NO_EDITABLE]') AND type in (N'P', N'PC'))
 	DROP PROCEDURE [dbo].[PG_UP_APQP_MODEL_HDR_NO_EDITABLE]
 GO
@@ -639,9 +853,7 @@ CREATE PROCEDURE [dbo].[PG_UP_APQP_MODEL_HDR_NO_EDITABLE]
 	@PP_APQP_ECN_RFQ_SP_REFERENCE		VARCHAR(255)
 AS			
 DECLARE @VP_MENSAJE					NVARCHAR(MAX) = ''
-BEGIN TRANSACTION 
-BEGIN TRY
-	-- /////////////////////////////////////////////////////////////////////
+-- /////////////////////////////////////////////////////////////////////
 	EXECUTE [dbo].[PG_RN_APQP_MODEL_HDR_UPDATE]	@PP_K_SISTEMA_EXE, @PP_K_USUARIO_ACCION,
 												@PP_K_APQP_MODEL_HDR, 
 												@OU_RESULTADO_VALIDACION = @VP_MENSAJE		OUTPUT
@@ -689,24 +901,6 @@ BEGIN TRY
 											-- ===========================
 											@PP_K_APQP_MODEL_HDR,	@PP_F_APQP_MODEL_HDR_CREATED
 -- /////////////////////////////////////////////////////////////////////
-COMMIT TRANSACTION 
-END TRY
-
-BEGIN CATCH
-	/* Ocurrió un error, deshacemos los cambios*/ 
-	ROLLBACK TRANSACTION
-	DECLARE @VP_ERROR_TRANS NVARCHAR(4000);
-	SET @VP_ERROR_TRANS = ERROR_MESSAGE() 
-	SET @VP_MENSAJE = 'ERROR:// ' + @VP_ERROR_TRANS
-END CATCH
-	
-	IF @VP_MENSAJE<>''
-	BEGIN
-		SET	@VP_MENSAJE = '!!!! ' + @VP_MENSAJE 
-	END
-
-	SELECT	@VP_MENSAJE AS MENSAJE, @PP_K_APQP_MODEL_HDR AS CLAVE
-	-- //////////////////////////////////////////////////////////////
 GO
 
 
